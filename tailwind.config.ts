@@ -10,6 +10,9 @@ const config = {
 	],
   prefix: "",
   theme: {
+    backgroundImage: {
+      'home-background': "url('../public/homebg.svg')",
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -52,6 +55,8 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        'custom-primary':'#9C88FB',
+      
       },
       borderRadius: {
         lg: "var(--radius)",
