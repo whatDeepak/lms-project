@@ -1,3 +1,9 @@
+.section{
+  @apply  p-[30px] lg:px-[90px] sm:py-[60px] md:py-[140px] md:px-[60px] 
+}
+.landing-section{
+  @apply  px-[30px] lg:px-[60px]   md:px-[45px] 
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
