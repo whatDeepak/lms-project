@@ -13,9 +13,10 @@ function NavBar() {
   };
 
   return (
+    <section className="landing-section">
     <div className=" md:top-0   md:shadow-none  mx-auto max-w-[1200px]  ">
       {/* DESKTOP */}
-      <div className=" animate-in fade-in zoom-in bg-white p-4">
+      <div className=" animate-in fade-in zoom-in bg-white py-4">
         <div className="flex justify-between items-center">
           {/* <div>
             <Image src="logo.svg" alt="logo" width={150} height={50} />
@@ -56,6 +57,7 @@ function NavBar() {
       </div>
 
     </div>
+    </section>
   );
 }
 
