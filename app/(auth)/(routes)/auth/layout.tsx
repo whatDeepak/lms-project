@@ -45,12 +45,12 @@ const AuthLayout = ({
 
   return (
     <div className="flex h-screen">
-      <div className="m-auto bg-slate-50 rounded-md  flex w-[170vh] h-[90vh]">
-        <div className="w-2/5 rounded-tl-md rounded-bl-md bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-custom-primary to-purple-100 flex flex-col justify-between">
+      <div className="m-auto bg-slate-50 rounded-md  flex lg:w-[70vw] lg:h-[90vh] md:w-[80vw] md:h-[80vh]">
+        <div className="hidden md:flex w-2/5 rounded-tl-md rounded-bl-md bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-custom-primary to-purple-100 flex-col justify-between">
           {/* Content for left div */}
-          <div className="m-10 mt-20">
-            <h1 className="text-5xl font-bold text-left text-white">Elevate Your Learning Experience</h1>
-            <p className="text-md font-light text-left text-white mt-8">
+          <div className="m-10 mt-15">
+            <h1 className="md:text-2xl lg:text-4xl font-bold text-left text-white">Elevate Your Learning Experience</h1>
+            <p className="md:text-sm text-md font-light text-left text-white mt-8">
               Unlock your potential and embark on a journey of knowledge and growth with our immersive learning experiences.
             </p>
           </div>
@@ -61,7 +61,7 @@ const AuthLayout = ({
           <div className="flex justify-center mb-8">
             <Carousel
               plugins={[plugin.current]}
-              className="w-full max-w-[24rem] h-[150px]"
+              className="w-full lg:block lg:w-[22vw] lg:h-[22vh] md:hidden"
             >
               <CarouselContent>
                 {reviews.map((review, index) => (
@@ -92,7 +92,14 @@ const AuthLayout = ({
           </div>
 
         </div>
-        <div className="w-3/5 rounded-tr-md rounded-br-md flex items-center justify-center">
+        <div className="md:hidden w-[80vw]">
+          <div className="text-center">
+            {children}
+          </div>
+        </div>
+
+        {/* Render only on large screens */}
+        <div className="hidden md:flex w-3/5 rounded-tr-md rounded-br-md items-center justify-center">
           <div className="text-center">
             {children}
           </div>
