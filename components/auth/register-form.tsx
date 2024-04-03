@@ -13,9 +13,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,  
+  FormMessage,
 } from "@/components/ui/form";
-import { CardWrapper } from "@/components/auth/card-wrapper"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -32,19 +33,19 @@ export const RegisterForm = () => {
       email: "",
       password: "",
       name: "",
+      type: "student",
     },
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
-    
+
     startTransition(() => {
-      register(values)
-        .then((data) => {
-          setError(data.error);
-          setSuccess(data.success);
-        });
+      register(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
     });
   };
 
@@ -56,23 +57,35 @@ export const RegisterForm = () => {
       showSocial
     >
       <Form {...form}>
-        <form 
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>You&apos;re creating an account as</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="John Doe"
-                    />
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-row space-y-1"
+                    >
+                      <Button variant="outline" size="lg" className="text-md">
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="all" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Teacher</FormLabel>
+                        </FormItem>
+                      </Button>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="mentions" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Student</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,11 +130,7 @@ export const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-          >
+          <Button disabled={isPending} type="submit" className="w-full">
             Create an account
           </Button>
         </form>
