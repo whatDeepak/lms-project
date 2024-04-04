@@ -15,8 +15,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CardWrapper } from "@/components/auth/card-wrapper";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+
+import { CardWrapper } from "@/components/auth/card-wrapper"
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -26,14 +41,13 @@ export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [selectedTab, setSelectedTab] = useState<string>("teacher");
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      email: "",
-      password: "",
       name: "",
-      type: "student",
+      rollNo: "",
     },
   });
 
@@ -42,92 +56,112 @@ export const RegisterForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      register(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
+      register(values)
+        .then((data) => {
+          setError(data.error);
+          setSuccess(data.success);
+        });
     });
   };
 
+  let nameValidationRules;
+  let rollNoValidationRules;
+
+  if (selectedTab === "teacher") {
+    nameValidationRules = {
+      required: "Name is required",
+    };
+  } else if (selectedTab === "student") {
+    nameValidationRules = {
+      required: "Name is required",
+    };
+    rollNoValidationRules = {
+      required: "Roll Number is required",
+      pattern: {
+        value: /^\d+$/,
+        message: "Roll Number must be an integer",
+      },
+    };
+  }
+
   return (
     <CardWrapper
-      headerLabel="Create an account"
+      headerLabel="You're creating an account as?"
       backButtonLabel="Already have an account?"
       backButtonHref="/auth/login"
-      showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>You&apos;re creating an account as</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-row space-y-1"
-                    >
-                      <Button variant="outline" size="lg" className="text-md">
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="all" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Teacher</FormLabel>
-                        </FormItem>
-                      </Button>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="mentions" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Student</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="john.doe@example.com"
-                      type="email"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="******"
-                      type="password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <Tabs defaultValue="student" className="w-[400px]">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="student" onClick={() => setSelectedTab("student")}>Student</TabsTrigger>
+              <TabsTrigger value="teacher" onClick={() => setSelectedTab("teacher")}>Teacher</TabsTrigger>
+            </TabsList>
+            <TabsContent value="student">
+              <div className="mt-6 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  rules={nameValidationRules}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>User Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="John Doe"
+                          
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="rollNo"
+                  rules={rollNoValidationRules}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Roll Number</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="22103046"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="teacher">
+              <div className="mt-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  rules={nameValidationRules}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>User Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="John Doe"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button disabled={isPending} type="submit" className="w-full">
