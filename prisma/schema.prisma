@@ -10,6 +10,7 @@ generator client {
 
 enum UserRole {
   ADMIN
+  TEACHER
   USER
 }
 
@@ -20,11 +21,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  password      String?
   role          UserRole  @default(USER)
   accounts      Account[]
-  isTwoFactorEnabled Boolean   @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
 }
 
 model Account {
@@ -46,38 +44,3 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model VerificationToken {
-  id String @id @default(cuid()) @map("_id")
-  email String
-  token String @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model PasswordResetToken {
-  id String @id @default(cuid()) @map("_id")
-  email String
-  token String @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model TwoFactorToken {
-  id String @id @default(cuid()) @map("_id")
-  email String
-  token String @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model TwoFactorConfirmation {
-  id String @id @default(cuid()) @map("_id")
-
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId])
-}

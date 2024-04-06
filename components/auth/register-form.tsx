@@ -67,22 +67,34 @@ export const RegisterForm = () => {
   let nameValidationRules;
   let rollNoValidationRules;
 
-  if (selectedTab === "teacher") {
-    nameValidationRules = {
-      required: "Name is required",
-    };
-  } else if (selectedTab === "student") {
-    nameValidationRules = {
-      required: "Name is required",
-    };
-    rollNoValidationRules = {
-      required: "Roll Number is required",
-      pattern: {
-        value: /^\d+$/,
-        message: "Roll Number must be an integer",
-      },
-    };
-  }
+  nameValidationRules = {
+    required: "Name is required",
+  };
+
+  rollNoValidationRules = {
+    required: "Roll Number is required",
+    pattern: {
+      value: /^\d+$/,
+      message: "Roll Number must be an integer",
+    },
+  };
+
+  // if (selectedTab === "teacher") {
+  //   nameValidationRules = {
+  //     required: "Name is required",
+  //   };
+  // } else if (selectedTab === "student") {
+  //   nameValidationRules = {
+  //     required: "Name is required",
+  //   };
+  //   rollNoValidationRules = {
+  //     required: "Roll Number is required",
+  //     pattern: {
+  //       value: /^\d+$/,
+  //       message: "Roll Number must be an integer",
+  //     },
+  //   };
+  // }
 
   return (
     <CardWrapper
@@ -92,17 +104,17 @@ export const RegisterForm = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Tabs defaultValue="student" className="w-[400px]">
+          <Tabs defaultValue="student" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="student" onClick={() => setSelectedTab("student")}>Student</TabsTrigger>
-              <TabsTrigger value="teacher" onClick={() => setSelectedTab("teacher")}>Teacher</TabsTrigger>
+              <TabsTrigger value="student" onClick={() =>{ form.reset(); setSelectedTab("student")}}>Student</TabsTrigger>
+              <TabsTrigger value="teacher" onClick={() => { form.reset(); setSelectedTab("teacher")}}>Teacher</TabsTrigger>
             </TabsList>
             <TabsContent value="student">
               <div className="mt-6 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={nameValidationRules}
+                  rules={selectedTab === 'student' ? nameValidationRules : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
@@ -111,6 +123,7 @@ export const RegisterForm = () => {
                           {...field}
                           disabled={isPending}
                           placeholder="John Doe"
+                          className="border border-gray-300 focus:border-input-border focus:outline-none"
                           
                         />
                       </FormControl>
@@ -121,7 +134,7 @@ export const RegisterForm = () => {
                 <FormField
                   control={form.control}
                   name="rollNo"
-                  rules={rollNoValidationRules}
+                  rules={selectedTab === 'student' ? rollNoValidationRules : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
@@ -130,6 +143,7 @@ export const RegisterForm = () => {
                           {...field}
                           disabled={isPending}
                           placeholder="22103046"
+                          className="border border-gray-300 focus:border-input-border focus:outline-none"
                         />
                       </FormControl>
                       <FormMessage />
@@ -143,7 +157,7 @@ export const RegisterForm = () => {
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={nameValidationRules}
+                  rules={selectedTab === 'teacher' ? nameValidationRules : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
@@ -152,6 +166,7 @@ export const RegisterForm = () => {
                           {...field}
                           disabled={isPending}
                           placeholder="John Doe"
+                          
                         />
                       </FormControl>
                       <FormMessage />

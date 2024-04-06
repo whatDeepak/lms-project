@@ -1,123 +1,113 @@
-"use server";
+// "use server";
 
-import * as z from "zod";
-import { AuthError } from "next-auth";
+// import * as z from "zod";
+// import { AuthError } from "next-auth";
 
-import { db } from "@/lib/db";
-import { signIn } from "@/auth";
-import { LoginSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
-import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
-import { 
-  sendVerificationEmail,
-  sendTwoFactorTokenEmail,
-} from "@/lib/mail";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { 
-  generateVerificationToken,
-  generateTwoFactorToken
-} from "@/lib/tokens";
-import { 
-  getTwoFactorConfirmationByUserId
-} from "@/data/two-factor-confirmation";
+// import { db } from "@/lib/db";
+// import { signIn } from "@/auth";
+// import { LoginSchema } from "@/schemas";
+// import { getUserByEmail } from "@/data/user";
 
-export const login = async (
-  values: z.infer<typeof LoginSchema>,
-  callbackUrl?: string | null,
-) => {
-  const validatedFields = LoginSchema.safeParse(values);
 
-  if (!validatedFields.success) {
-    return { error: "Invalid fields!" };
-  }
+// import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
-  const { email, password, code } = validatedFields.data;
+// export const login = async (
+//   values: z.infer<typeof LoginSchema>,
+//   callbackUrl?: string | null,
+// ) => {
+//   const validatedFields = LoginSchema.safeParse(values);
 
-  const existingUser = await getUserByEmail(email);
+//   if (!validatedFields.success) {
+//     return { error: "Invalid fields!" };
+//   }
 
-  if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email does not exist!" }
-  }
+//   const { email, password, code } = validatedFields.data;
 
-  if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email,
-    );
+//   const existingUser = await getUserByEmail(email);
 
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
+//   if (!existingUser || !existingUser.email || !existingUser.password) {
+//     return { error: "Email does not exist!" }
+//   }
 
-    return { success: "Confirmation email sent!" };
-  }
+//   // if (!existingUser.emailVerified) {
+//   //   const verificationToken = await generateVerificationToken(
+//   //     existingUser.email,
+//   //   );
 
-  if (existingUser.isTwoFactorEnabled && existingUser.email) {
-    if (code) {
-      const twoFactorToken = await getTwoFactorTokenByEmail(
-        existingUser.email
-      );
+//     // await sendVerificationEmail(
+//     //   verificationToken.email,
+//     //   verificationToken.token,
+//     // );
 
-      if (!twoFactorToken) {
-        return { error: "Invalid code!" };
-      }
+//     return { success: "Confirmation email sent!" };
+//   }
 
-      if (twoFactorToken.token !== code) {
-        return { error: "Invalid code!" };
-      }
+//   if (existingUser.isTwoFactorEnabled && existingUser.email) {
+//     if (code) {
+//       const twoFactorToken = await getTwoFactorTokenByEmail(
+//         existingUser.email
+//       );
 
-      const hasExpired = new Date(twoFactorToken.expires) < new Date();
+//       if (!twoFactorToken) {
+//         return { error: "Invalid code!" };
+//       }
 
-      if (hasExpired) {
-        return { error: "Code expired!" };
-      }
+//       if (twoFactorToken.token !== code) {
+//         return { error: "Invalid code!" };
+//       }
 
-      await db.twoFactorToken.delete({
-        where: { id: twoFactorToken.id }
-      });
+//       const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
-      const existingConfirmation = await getTwoFactorConfirmationByUserId(
-        existingUser.id
-      );
+//       if (hasExpired) {
+//         return { error: "Code expired!" };
+//       }
 
-      if (existingConfirmation) {
-        await db.twoFactorConfirmation.delete({
-          where: { id: existingConfirmation.id }
-        });
-      }
+//       await db.twoFactorToken.delete({
+//         where: { id: twoFactorToken.id }
+//       });
 
-      await db.twoFactorConfirmation.create({
-        data: {
-          userId: existingUser.id,
-        }
-      });
-    } else {
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email)
-      await sendTwoFactorTokenEmail(
-        twoFactorToken.email,
-        twoFactorToken.token,
-      );
+//       const existingConfirmation = await getTwoFactorConfirmationByUserId(
+//         existingUser.id
+//       );
 
-      return { twoFactor: true };
-    }
-  }
+//       if (existingConfirmation) {
+//         await db.twoFactorConfirmation.delete({
+//           where: { id: existingConfirmation.id }
+//         });
+//       }
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-    })
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Invalid credentials!" }
-        default:
-          return { error: "Something went wrong!" }
-      }
-    }
+//       await db.twoFactorConfirmation.create({
+//         data: {
+//           userId: existingUser.id,
+//         }
+//       });
+//     } else {
+//       const twoFactorToken = await generateTwoFactorToken(existingUser.email)
+//       await sendTwoFactorTokenEmail(
+//         twoFactorToken.email,
+//         twoFactorToken.token,
+//       );
 
-    throw error;
-  }
-};
+//       return { twoFactor: true };
+//     }
+//   }
+
+//   try {
+//     await signIn("credentials", {
+//       email,
+//       password,
+//       redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+//     })
+//   } catch (error) {
+//     if (error instanceof AuthError) {
+//       switch (error.type) {
+//         case "CredentialsSignin":
+//           return { error: "Invalid credentials!" }
+//         default:
+//           return { error: "Something went wrong!" }
+//       }
+//     }
+
+//     throw error;
+//   }
+// };
