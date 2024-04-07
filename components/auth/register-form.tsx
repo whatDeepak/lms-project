@@ -36,25 +36,45 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
+// Define separate schemas for student and teacher
+const studentSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  rollNo: z.string().min(1, { message: "Roll Number is required" }),
+});
+
+const teacherSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+});
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [selectedTab, setSelectedTab] = useState<string>("teacher");
+// Define a dynamic schema state to hold the current schema
+const [schema, setSchema] = useState<any>(studentSchema);
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       rollNo: "",
     },
   });
-
+  // Function to handle tab change and update the schema accordingly
+  const handleTabChange = (tab: string) => {
+    setSelectedTab(tab);
+    setSchema((tab === "student" )? studentSchema : teacherSchema);
+    form.reset(); // Reset the form when the tab changes
+  };
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    console.log("values: ",values);
     setError("");
     setSuccess("");
+
+    if (selectedTab === 'student' && !values.rollNo) {
+      setError("Roll Number is required");
+      return;
+    }
 
     startTransition(() => {
       register(values)
@@ -64,38 +84,6 @@ export const RegisterForm = () => {
         });
     });
   };
-
-  let nameValidationRules;
-  let rollNoValidationRules;
-
-  nameValidationRules = {
-    required: "Name is required",
-  };
-
-  rollNoValidationRules = {
-    required: "Roll Number is required",
-    pattern: {
-      value: /^\d+$/,
-      message: "Roll Number must be an integer",
-    },
-  };
-
-  // if (selectedTab === "teacher") {
-  //   nameValidationRules = {
-  //     required: "Name is required",
-  //   };
-  // } else if (selectedTab === "student") {
-  //   nameValidationRules = {
-  //     required: "Name is required",
-  //   };
-  //   rollNoValidationRules = {
-  //     required: "Roll Number is required",
-  //     pattern: {
-  //       value: /^\d+$/,
-  //       message: "Roll Number must be an integer",
-  //     },
-  //   };
-  // }
 
   return (
     <CardWrapper
@@ -107,15 +95,15 @@ export const RegisterForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Tabs defaultValue="student" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="student" onClick={() =>{ form.reset(); setSelectedTab("student")}}>Student</TabsTrigger>
-              <TabsTrigger value="teacher" onClick={() => { form.reset(); setSelectedTab("teacher")}}>Teacher</TabsTrigger>
+              <TabsTrigger value="student" onClick={() => handleTabChange("student") }>Student</TabsTrigger>
+              <TabsTrigger value="teacher" onClick={() => handleTabChange("teacher")}>Teacher</TabsTrigger>
             </TabsList>
             <TabsContent value="student">
               <div className="mt-6 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={selectedTab === 'student' ? nameValidationRules : undefined}
+                  rules={selectedTab === 'student' ? { required: "Name is required" } : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
@@ -125,7 +113,6 @@ export const RegisterForm = () => {
                           disabled={isPending}
                           placeholder="John Doe"
                           className="border border-gray-300 focus:border-input-border focus:outline-none"
-                          
                         />
                       </FormControl>
                       <FormMessage />
@@ -135,7 +122,7 @@ export const RegisterForm = () => {
                 <FormField
                   control={form.control}
                   name="rollNo"
-                  rules={selectedTab === 'student' ? rollNoValidationRules : undefined}
+                  rules={selectedTab === 'student' ? { required: "Roll Number is required" } : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
@@ -158,7 +145,7 @@ export const RegisterForm = () => {
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={selectedTab === 'teacher' ? nameValidationRules : undefined}
+                  rules={selectedTab === 'teacher' ? { required: "Name is required" } : undefined}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
@@ -167,7 +154,6 @@ export const RegisterForm = () => {
                           {...field}
                           disabled={isPending}
                           placeholder="John Doe"
-                          
                         />
                       </FormControl>
                       <FormMessage />
