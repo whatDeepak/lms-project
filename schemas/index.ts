@@ -56,7 +56,5 @@ export const RegisterSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
-  rollNo: z.string().min(1, {
-    message: "Roll Number is required",
-  })
+  rollNo: z.string().optional()
 });
