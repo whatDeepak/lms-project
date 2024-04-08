@@ -28,27 +28,15 @@ export const {
     }
   },
   callbacks: {
-    async signIn({ user, account }) {
-      // Allow OAuth without email verification
-      if (account?.provider !== "credentials") return true;
-
-      const existingUser = await getUserById(user.id!);
-
-      // Prevent sign in without email verification
-      if (!existingUser?.emailVerified) return false;
-
-      // if (existingUser.isTwoFactorEnabled) {
-      //  // const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
-
-      //   if (!twoFactorConfirmation) return false;
-
-      //   // Delete two factor confirmation for next sign in
-      //   await db.twoFactorConfirmation.delete({
-      //     where: { id: twoFactorConfirmation.id }
-      //   });
-      // }
-
-      return true;
+    async signIn({ account ,profile }) {
+       console.log(account)
+       console.log(profile)
+       if(!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)){
+        console.log("Different domain email")
+        
+        return false;
+       }
+       return true;
     },
     async session({ token, session }) {
       if (token.sub && session.user) {
