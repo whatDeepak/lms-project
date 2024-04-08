@@ -22,21 +22,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { CardWrapper } from "@/components/auth/card-wrapper"
+import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
-import { Social } from "./social";
 // Define separate schemas for student and teacher
 const studentSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -48,12 +42,13 @@ const teacherSchema = z.object({
 });
 
 export const RegisterForm = () => {
+  const router =useRouter();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [selectedTab, setSelectedTab] = useState<string>("teacher");
-// Define a dynamic schema state to hold the current schema
-const [schema, setSchema] = useState<any>(studentSchema);
+  // Define a dynamic schema state to hold the current schema
+  const [schema, setSchema] = useState<any>(studentSchema);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -65,24 +60,48 @@ const [schema, setSchema] = useState<any>(studentSchema);
   // Function to handle tab change and update the schema accordingly
   const handleTabChange = (tab: string) => {
     setSelectedTab(tab);
-    setSchema((tab === "student" )? studentSchema : teacherSchema);
+    setSchema(tab === "student" ? studentSchema : teacherSchema);
     form.reset(); // Reset the form when the tab changes
   };
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = async(values: z.infer<typeof RegisterSchema>) => {
+    console.log(values);
     setError("");
     setSuccess("");
 
-    if (selectedTab === 'student' && !values.rollNo) {
+    if (selectedTab === "student" && !values.rollNo) {
       setError("Roll Number is required");
       return;
     }
 
+    const validatedFields = await RegisterSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+      setError("Invalid fields!");
+      return ;
+    }
+    const { name, rollNo} = validatedFields.data;
+    try {
+      signIn("google", {
+        callbackUrl: DEFAULT_LOGIN_REDIRECT,
+      });
+      await db.user.create({
+        data: {
+          name,
+          rollNo,
+        },
+      });
+    } catch (error) {
+      setError("Something went wrong");
+      router.push("/")
+      
+    }
+
     startTransition(() => {
-      register(values)
-        .then((data) => {
-          setError(data.error);
-          setSuccess(data.success);
-        });
+      // register(values)
+      //   .then((data) => {
+      //     setError(data.error);
+      //     setSuccess(data.success);
+      //   });
     });
   };
 
@@ -96,15 +115,29 @@ const [schema, setSchema] = useState<any>(studentSchema);
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Tabs defaultValue="student" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="student" onClick={() => handleTabChange("student") }>Student</TabsTrigger>
-              <TabsTrigger value="teacher" onClick={() => handleTabChange("teacher")}>Teacher</TabsTrigger>
+              <TabsTrigger
+                value="student"
+                onClick={() => handleTabChange("student")}
+              >
+                Student
+              </TabsTrigger>
+              <TabsTrigger
+                value="teacher"
+                onClick={() => handleTabChange("teacher")}
+              >
+                Teacher
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="student">
               <div className="mt-6 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={selectedTab === 'student' ? { required: "Name is required" } : undefined}
+                  rules={
+                    selectedTab === "student"
+                      ? { required: "Name is required" }
+                      : undefined
+                  }
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
@@ -123,7 +156,11 @@ const [schema, setSchema] = useState<any>(studentSchema);
                 <FormField
                   control={form.control}
                   name="rollNo"
-                  rules={selectedTab === 'student' ? { required: "Roll Number is required" } : undefined}
+                  rules={
+                    selectedTab === "student"
+                      ? { required: "Roll Number is required" }
+                      : undefined
+                  }
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Roll Number</FormLabel>
@@ -146,7 +183,11 @@ const [schema, setSchema] = useState<any>(studentSchema);
                 <FormField
                   control={form.control}
                   name="name"
-                  rules={selectedTab === 'teacher' ? { required: "Name is required" } : undefined}
+                  rules={
+                    selectedTab === "teacher"
+                      ? { required: "Name is required" }
+                      : undefined
+                  }
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User Name</FormLabel>
