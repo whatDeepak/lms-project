@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { RegisterSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/user";
+import { signIn } from "next-auth/react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
@@ -16,6 +18,10 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   }
 
   const { name, rollNo} = validatedFields.data;
+
+  // signIn("google", {
+  //   callbackUrl: DEFAULT_LOGIN_REDIRECT,
+  // });
   // const hashedPassword = await bcrypt.hash(password, 10);
 
   // const existingUser = await getUserByEmail(email);
@@ -30,12 +36,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       rollNo,
     },
   });
-
-  // const verificationToken = await generateVerificationToken(email);
-  // await sendVerificationEmail(
-  //   verificationToken.email,
-  //   verificationToken.token,
-  // );
 
   return { success: "Confirmation email sent!" };
 };
