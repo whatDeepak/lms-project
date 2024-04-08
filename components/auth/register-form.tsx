@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
+import { Social } from "./social";
 // Define separate schemas for student and teacher
 const studentSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
