@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import Image from "next/image";
-
-export default function Home() {
-  return (
-    <>
-      <p>
-        SUP!
-      </p>
-    </>
-=======
 import { Poppins } from "next/font/google";
 
 import { cn } from "@/lib/utils";
@@ -31,6 +20,5 @@ export default function Home() {
        </div>
         
     </main>
->>>>>>> 531cb4e41a5b943650d91a99bc776500570908a9
   );
 }

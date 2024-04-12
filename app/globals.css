@@ -1,45 +1,13 @@
-<<<<<<< HEAD
-=======
 .section{
   @apply  p-[30px] lg:px-[90px] sm:py-[60px] md:py-[140px] md:px-[60px] 
 }
 .landing-section{
   @apply  px-[30px] lg:px-[60px]   md:px-[45px] 
 }
->>>>>>> 531cb4e41a5b943650d91a99bc776500570908a9
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-<<<<<<< HEAD
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-=======
 html,
 body,
 :root {
@@ -116,6 +84,5 @@ body,
   }
   body {
     @apply bg-background text-foreground;
->>>>>>> 531cb4e41a5b943650d91a99bc776500570908a9
   }
 }
