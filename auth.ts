@@ -16,7 +16,7 @@ export const {
   unstable_update,
 } = NextAuth({
   pages: {
-    signIn: "/auth/login",
+    signIn: "/auth/register",
     error: "/auth/error",
   },
   events: {
@@ -29,8 +29,8 @@ export const {
   },
   callbacks: {
     async signIn({ account ,profile }) {
-       console.log(account)
-       console.log(profile)
+      //  console.log(account)
+      //  console.log(profile)
        if(!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)){
         console.log("Different domain email")
         

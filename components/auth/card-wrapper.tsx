@@ -33,17 +33,17 @@ export const CardWrapper = ({
       <CardContent>
         {children}
       </CardContent>
-      {/* {showSocial && (
+      {showSocial && (
         <CardFooter>
           <Social />
         </CardFooter>
-      )} */}
-      <CardFooter>
+      )}
+      {/* <CardFooter>
         <BackButton
           label={backButtonLabel}
           href={backButtonHref}
         />
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };

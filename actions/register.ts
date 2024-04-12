@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const register = async (values: z.infer<typeof RegisterSchema>,callbackUrl?: string | null,) => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {

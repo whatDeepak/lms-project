@@ -23,7 +23,7 @@ export const LoginButton = ({
   const router = useRouter();
 
   const onClick = () => {
-    router.push("/auth/login");
+    router.push("/auth/register");
   };
 
   if (mode === "modal") {
