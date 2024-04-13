@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { LoginButton } from "@/components/auth/login-button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
+import { set } from "date-fns";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -26,19 +27,24 @@ const Dashboard = () =>  {
 
   // Use useEffect to control the dialog visibility based on user.role
   useEffect(() => {
+    const hasShownPopover = localStorage.getItem('popoverShown');
     // Check if user.role is empty and set showDialog state
-    if (user?.role === null || user?.role === undefined) {
-        setShowDialog(true);
-    } else {
-        setShowDialog(false);
-    }
+    // if ((user?.role ===  || user?.role === undefined)) {
+    //     setShowDialog(true);
+    // } else {
+    //     setShowDialog(false);
+    // }
+     if(!hasShownPopover && user?.role==='USER' ){
+      setShowDialog(true);
+      
+     }
   }, [user]);
   
   return (
     <>
       <p>
         Hello world!!
-        {showDialog && <UpdateDialog onClose={() => setShowDialog(false)} />}
+        {showDialog  && <UpdateDialog userId={user?.id} onClose={() => {setShowDialog(false);localStorage.setItem('popoverShown', 'true');}} />}
       </p>
     </>
   )
