@@ -1,11 +1,9 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 import { UserRole } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-
 import { db } from "@/lib/db";
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user";
-
 import { getAccountByUserId } from "./data/account";
 
 export const {
@@ -23,20 +21,18 @@ export const {
     async linkAccount({ user }) {
       await db.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() }
-      })
-    }
+        data: { emailVerified: new Date() },
+      });
+    },
   },
   callbacks: {
-    async signIn({ account ,profile }) {
-      //  console.log(account)
-      //  console.log(profile)
-       if(!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)){
-        console.log("Different domain email")
-        
+    async signIn({ account, profile }) {
+      // Check if email is verified and ends with `@nitj.ac.in`
+      if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+        console.log("Different domain email");
         return false;
-       }
-       return true;
+      }
+      return true;
     },
     async session({ token, session }) {
       if (token.sub && session.user) {
@@ -62,22 +58,44 @@ export const {
     async jwt({ token }) {
       if (!token.sub) return token;
 
+      // Fetch the existing user by ID
       const existingUser = await getUserById(token.sub);
+      if (!existingUser) {
+        console.log("Existing user not found");
+        return token;
+      }
 
-      if (!existingUser) return token;
-
-      const existingAccount = await getAccountByUserId(
-        existingUser.id
-      );
-
+      // Fetch the existing account
+      const existingAccount = await getAccountByUserId(existingUser.id);
       token.isOAuth = !!existingAccount;
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.role = existingUser.role;
-      // token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
+      // Check if the user's email exists in the teacher collection
+      if (token.email) {
+        const teacher = await db.teacher.findUnique({
+          where: {
+            email: token.email,
+          },
+        });
+
+        // If the email is found in the teacher collection and the user's current role is not already "TEACHER"
+        if (teacher && existingUser.role !== UserRole.TEACHER) {
+          token.role = UserRole.TEACHER;
+
+          // Update the user's role in the MongoDB database
+          await db.user.update({
+            where: { id: existingUser.id },
+            data: { role: UserRole.TEACHER },
+          });
+
+          console.log(`User role updated to TEACHER in the database for user ID: ${existingUser.id}`);
+        }
+      }
 
       return token;
-    }
+    },
   },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },

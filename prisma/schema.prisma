@@ -44,3 +44,8 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Teacher {
+  id    String @id @default(cuid()) @map("_id")
+  email String @unique
+}
+
