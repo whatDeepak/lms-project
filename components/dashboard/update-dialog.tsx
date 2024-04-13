@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+"use client"
+
+>>>>>>> 5ea4f19fbc284195ead76078b227ac6accb10008
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +25,7 @@ interface UpdateDialogProps {
 export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) => {
     const [open, setOpen] = useState(true);
     const [rollno, setRollno] = useState("");
+    console.log(userId);
 
     const handleClose = async () => {
         console.log(`User ID: ${userId}`);
@@ -33,21 +39,26 @@ export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) =
         }
     
         try {
-            console.log("Updating the database...");
-            await db.user.update({
-                where: { id: userId },
-                data: {
-                    rollNo: rollno,
+            const response = await fetch('/api/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ userId, rollNo: rollno }),
             });
-            console.log(`Roll number updated for user with ID ${userId}: ${rollno}`);
+    
+            if (response.ok) {
+                console.log(`Roll number updated for user with ID ${userId}: ${rollno}`);
+                setOpen(false);
+                onClose();
+            } else {
+                console.error("Error updating roll number:", response.statusText);
+            }
         } catch (error) {
             console.error("Error updating roll number:", error);
         }
-    
-        setOpen(false);
-        onClose();
     };
+    
     
 
     return (
