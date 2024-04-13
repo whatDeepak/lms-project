@@ -92,6 +92,17 @@ export const {
 
           console.log(`User role updated to TEACHER in the database for user ID: ${existingUser.id}`);
         }
+        else if (existingUser.role === UserRole.USER) {
+          await db.user.upsert({
+            where: { id: existingUser.id },
+            update: {
+              rollNo: "",
+            },
+            create: {
+              rollNo: "" ,
+            },
+          });
+        }
       }
 
       return token;
