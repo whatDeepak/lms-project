@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 "use client"
 
->>>>>>> 5ea4f19fbc284195ead76078b227ac6accb10008
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +22,6 @@ interface UpdateDialogProps {
 export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) => {
     const [open, setOpen] = useState(true);
     const [rollno, setRollno] = useState("");
-    console.log(userId);
 
     const handleClose = async () => {
         console.log(`User ID: ${userId}`);

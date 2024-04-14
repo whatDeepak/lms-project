@@ -44,7 +44,7 @@ export const {
       }
 
       if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.rollNo= token.rollNo as String;
       }
 
       if (session.user) {
@@ -71,6 +71,7 @@ export const {
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.role = existingUser.role;
+      token.rollNo= existingUser.rollNo
 
       // Check if the user's email exists in the teacher collection
       if (token.email) {
