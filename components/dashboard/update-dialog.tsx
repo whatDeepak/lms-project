@@ -22,7 +22,6 @@ interface UpdateDialogProps {
 export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) => {
     const [open, setOpen] = useState(true);
     const [rollno, setRollno] = useState("");
-    console.log(userId);
 
     const handleClose = async () => {
         console.log(`User ID: ${userId}`);

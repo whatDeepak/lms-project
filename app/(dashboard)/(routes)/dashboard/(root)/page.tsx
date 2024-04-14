@@ -9,6 +9,7 @@ import { LoginButton } from "@/components/auth/login-button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { getUserByEmail, getUserById } from "@/data/user";
+import { db } from "@/lib/db";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -26,25 +27,25 @@ const Dashboard = () => {
     const [showDialog, setShowDialog] = useState(false);
 
     useEffect(() => {
-        const checkUserRoleAndRollNo = async () => {
-            if (user?.role === UserRole.USER && !user.rollNo) {
-                console.log(user.id);
-
-                // const userData = await getUserById(user.id);
-                  
-                // console.log(userData);
-
-                // const shouldShowDialog = userData && (!userData.rollNo || userData.rollNo === '');
-
-                // if(shouldShowDialog)
-                setShowDialog(true);
-            } else {
-                setShowDialog(false);
+        const checkRollNo = () => {
+            try {
+                if (user &&user?.role === UserRole.USER && user.rollNo==="") {
+                    setShowDialog(true);
+                } else {
+                    setShowDialog(false);
+                }
+            } catch (error) {
+                console.error("Error checking rollNo:", error);
             }
         };
-
-        checkUserRoleAndRollNo();
+     console.log("roll:",user?.rollNo);
+        checkRollNo();
     }, [user]);
+
+    const handleCloseDialog = () => {
+        // Close the Dialog
+        setShowDialog(false);
+    };
 
     return (
         <>
@@ -53,7 +54,7 @@ const Dashboard = () => {
                 {showDialog && user && (
                     <UpdateDialog
                         onClose={() => setShowDialog(false)}
-                        userId={user.id}
+                        userId={user?.id}
                     />
                 )}
             </p>
