@@ -92,6 +92,7 @@ export const {
 
           console.log(`User role updated to TEACHER in the database for user ID: ${existingUser.id}`);
         }
+
       }
 
       return token;

@@ -26,18 +26,9 @@ const Dashboard = () => {
     const [showDialog, setShowDialog] = useState(false);
 
     useEffect(() => {
-        const checkUserRoleAndRollNo = async () => {
-            if (user?.role === UserRole.USER && !user.rollNo) {
-                console.log(user.id);
-
-                // const userData = await getUserById(user.id);
-                  
-                // console.log(userData);
-
-                // const shouldShowDialog = userData && (!userData.rollNo || userData.rollNo === '');
-
-                // if(shouldShowDialog)
-                setShowDialog(true);
+        const checkUserRoleAndRollNo = () => {
+            if (user?.role === UserRole.USER && (user.rollNo === "")) {
+              setShowDialog(true);
             } else {
                 setShowDialog(false);
             }
