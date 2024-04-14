@@ -27,13 +27,6 @@ const Dashboard = () => {
     const [showDialog, setShowDialog] = useState(false);
 
     useEffect(() => {
-<<<<<<< HEAD
-        const checkUserRoleAndRollNo = () => {
-            if (user?.role === UserRole.USER && (user.rollNo === "")) {
-              setShowDialog(true);
-            } else {
-                setShowDialog(false);
-=======
         const checkRollNo = () => {
             try {
                 if (user &&user?.role === UserRole.USER && user.rollNo==="") {
@@ -43,7 +36,6 @@ const Dashboard = () => {
                 }
             } catch (error) {
                 console.error("Error checking rollNo:", error);
->>>>>>> 7d53497f936ef0b57214417cbad884b7a4e99493
             }
         };
      console.log("roll:",user?.rollNo);
