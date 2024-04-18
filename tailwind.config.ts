@@ -56,8 +56,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         'custom-primary':'#9C88FB',
-        'input-border': '#5925DC'
-      
+        'input-border': '#5925DC',
+        'active': '#EEEAFE',
+        'text-secondary': '#1E265E',
       },
       borderRadius: {
         lg: "var(--radius)",

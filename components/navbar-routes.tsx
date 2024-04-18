@@ -1,5 +1,9 @@
 "use client";
 
+import { Search } from "@/app/(dashboard)/(routes)/dashboard/components/search";
+import { UserNav } from "@/app/(dashboard)/(routes)/dashboard/components/user-nav";
+import { useCurrentUser } from "@/hooks/use-current-user";
+
 // import { UserButton, useAuth } from "@clerk/nextjs";
 // import { usePathname } from "next/navigation";
 // import { LogOut } from "lucide-react";
@@ -17,6 +21,9 @@ export const NavbarRoutes = () => {
   // const isTeacherPage = pathname?.startsWith("/teacher");
   // const isCoursePage = pathname?.includes("/courses");
   // const isSearchPage = pathname === "/search";
+  const user = useCurrentUser();
+  const firstName = user?.name?.split(' ')[0]; // Get the first name
+  const formattedName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
 
   return (
     <>
@@ -44,9 +51,11 @@ export const NavbarRoutes = () => {
           afterSignOutUrl="/"
         />
       </div> */}
-      <p>
-        Hello
-      </p>
+      <p className="text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
+      <div className="ml-auto flex items-center space-x-4">
+        <Search />
+        <UserNav />
+      </div>
     </>
   )
 }
