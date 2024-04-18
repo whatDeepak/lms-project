@@ -29,6 +29,7 @@ import { CalendarDateRangePicker } from "../components/date-range-picker";
 import { Overview } from "../components/overview";
 import { RecentSales } from "../components/recent-sales";
 import DoughnutChart from "../components/doughnutChart";
+import { CoursesList } from "@/components/courses-list";
 
 
 const font = Poppins({
@@ -77,7 +78,7 @@ const Dashboard = () => {
             )}
             <div className="flex flex-col md:flex-row">
                 {/* Main content area */}
-                <div className="flex-1 p-4">
+                <div className="flex-1 p-4 space-y-6">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -100,8 +101,9 @@ const Dashboard = () => {
                             </CardContent>
                         </Card>
                     </div>
+                    <CoursesList />
                 </div>
-
+                
                 <div className="w-56 md:w-64 lg:w-72 flex-shrink-0 p-4 space-y-4">
                     <CalendarDateRangePicker />
                     <DoughnutChart /> 
