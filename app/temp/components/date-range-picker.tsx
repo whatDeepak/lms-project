@@ -27,7 +27,7 @@ export function CalendarDateRangePicker({
     <Calendar
       mode="single"
       selected={date}
-      onSelect={setDate}
+      onSelect={()=>{ setDate(date) ;console.log(date);  }}
       className="rounded-md border"
     />
     // <div className={cn("grid gap-2", className)}>

@@ -17,6 +17,7 @@ import { Search } from "./components/search";
 import { UserNav } from "./components/user-nav";
 import { CalendarDateRangePicker } from "./components/date-range-picker";
 import DoughnutChart from "./components/doughnutChart";
+import { CoursesList } from "@/components/courses-list";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -60,18 +61,18 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 ">
-                <Card className="col-span-4">
+                {/* <Card className="col-span-4">
                   <CardHeader>
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <Overview />
                   </CardContent>
-                </Card>
-              </div>
+                </Card> */}
+                <CoursesList  />
+              
             </div>
-            <div className="flex flex-col items-center  space-y-2 justify-start">
+            <div className="flex flex-col items-center  space-y-2 justify-start ">
               <div className="flex items-center space-x-2">
                 <CalendarDateRangePicker />
               </div>
