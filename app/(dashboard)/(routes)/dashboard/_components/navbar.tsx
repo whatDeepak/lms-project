@@ -1,6 +1,6 @@
 import { NavbarRoutes } from "@/components/navbar-routes"
 import { MobileSidebar } from "./mobile-sidebar"
-import { UserButton } from "@/components/auth/user-button"
+
 
 export const Navbar = () => {
   return (
