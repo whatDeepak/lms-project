@@ -13,6 +13,11 @@ body,
 :root {
   height: 100%;
 }
+.dashboard-container {
+  overflow-x: hidden;
+}
+
+
  
 @layer base {
   :root {
