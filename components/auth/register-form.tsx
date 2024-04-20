@@ -44,6 +44,7 @@ export const RegisterForm = () => {
       backButtonLabel=""
       backButtonHref=""
       showSocial
+      type="signUp"
     >
       <>
       </>
