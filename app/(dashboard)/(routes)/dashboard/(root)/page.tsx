@@ -91,8 +91,11 @@ const Dashboard = () => {
                     <CoursesList />
                 </div>
 
-                <div className="fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
+                <div className=" hidden md:block fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
+                    <div className="min-h-[326px]">
+
                     <CalendarDateRangePicker />
+                    </div>
                     <DoughnutChart />
                 </div>
             </div>
