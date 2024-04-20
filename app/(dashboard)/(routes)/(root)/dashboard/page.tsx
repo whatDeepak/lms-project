@@ -14,8 +14,8 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { db } from "@/lib/db";
-import { CalendarDateRangePicker } from "../components/date-range-picker";
-import DoughnutChart from "../components/doughnutChart";
+import { CalendarDateRangePicker } from "../../../components/date-range-picker";
+import DoughnutChart from "../../../components/doughnutChart";
 import { CoursesList } from "@/components/courses-list";
 
 
@@ -91,8 +91,10 @@ const Dashboard = () => {
                     <CoursesList />
                 </div>
 
-                <div className="fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
-                    <CalendarDateRangePicker />
+                <div className=" hidden md:block fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
+                    <div className="min-h-[326px]">
+                        <CalendarDateRangePicker />
+                    </div>
                     <DoughnutChart />
                 </div>
             </div>

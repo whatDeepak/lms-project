@@ -1,7 +1,7 @@
 "use client";
 
-import { Search } from "@/app/(dashboard)/(routes)/dashboard/components/search";
-import { UserNav } from "@/app/(dashboard)/(routes)/dashboard/components/user-nav";
+import { Search } from "@/app/(dashboard)/components/search";
+import { UserNav } from "@/app/(dashboard)/components/user-nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
 // import { UserButton, useAuth } from "@clerk/nextjs";
