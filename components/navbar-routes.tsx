@@ -51,7 +51,7 @@ export const NavbarRoutes = () => {
           afterSignOutUrl="/"
         />
       </div> */}
-      <p className="text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
+      <p className="text-lg md:text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
       <div className="ml-auto flex items-center space-x-4">
         <Search />
         <UserNav />
