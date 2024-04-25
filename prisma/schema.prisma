@@ -49,3 +49,42 @@ model Teacher {
   id    String @id @default(cuid()) @map("_id")
   email String @unique
 }
+
+model Course {
+  id String @id @default(cuid()) @map("_id")
+  userId String
+  title String 
+  description String? 
+  imageUrl String? 
+  isPublished Boolean @default(false)
+
+  categoryId String?
+  category Category? @relation(fields: [categoryId], references: [id])
+  
+  attachments Attachment[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model Category {
+  id String @id @default(cuid()) @map("_id")
+  name String @unique
+  courses Course[]
+}
+
+model Attachment {
+  id String @id @default(cuid()) @map("_id")
+  name String
+  url String 
+
+  courseId String
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
