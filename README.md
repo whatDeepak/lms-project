@@ -1,6 +1,6 @@
 ## About the Project
 
-![LMS Image]()
+![LMS Image](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/Preview.png)
 
 
 
