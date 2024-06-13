@@ -42,7 +42,7 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
+            
             progress={50}
             category="Web Development"
           />
@@ -52,7 +52,7 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
+            
             progress={50}
             category="Web Development"
           />
@@ -62,7 +62,7 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
+            
             progress={50}
             category="Web Development"
           />
@@ -72,7 +72,7 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
+            
             progress={50}
             category="Web Development"
           />
@@ -82,7 +82,6 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
             progress={50}
             category="Web Development"
           />
@@ -92,7 +91,6 @@ export const CoursesList = ({
             title="Web Development by XYZ"
             imageUrl="/image.png"
             chaptersLength={50}
-            price={100}
             progress={50}
             category="Web Development"
           />
