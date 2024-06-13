@@ -31,6 +31,11 @@ const CourseIdPage = async ({
       userId
     },
     include: {
+      chapters: {
+        orderBy: {
+          position: "asc",
+        },
+      },
       attachments: {
         orderBy: {
           createdAt: "desc",
@@ -55,6 +60,7 @@ const CourseIdPage = async ({
     course.description,
     course.imageUrl,
     course.categoryId,
+    course.chapters.some(chapter => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -117,7 +123,7 @@ const CourseIdPage = async ({
             />
           </div>
           <div className="space-y-6">
-            {/* <div>
+            <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={ListChecks} />
                 <h2 className="text-xl">
@@ -128,7 +134,7 @@ const CourseIdPage = async ({
                 initialData={course}
                 courseId={course.id}
               />
-            </div> */}
+            </div>
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={File} />
