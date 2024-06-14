@@ -10,6 +10,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { getUserByEmail, getUserById } from "@/data/user";
 import { db } from "@/lib/db";
+import { CalendarDateRangePicker } from "./date-range-picker";
 
 const font = Poppins({
     subsets: ["latin"],
