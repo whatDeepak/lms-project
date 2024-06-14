@@ -136,7 +136,7 @@ export const ChaptersForm = ({
           </form>
         </Form>
       )}
-      {/* {!isCreating && (
+      {!isCreating && (
         <div className={cn(
           "text-sm mt-2",
           !initialData.chapters.length && "text-slate-500 italic"
@@ -148,7 +148,7 @@ export const ChaptersForm = ({
             items={initialData.chapters || []}
           />
         </div>
-      )} */}
+      )}
       {!isCreating && (
         <p className="text-xs text-muted-foreground mt-4">
           Drag and drop to reorder the chapters
