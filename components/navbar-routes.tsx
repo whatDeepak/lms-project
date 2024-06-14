@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "@/app/(dashboard)/components/search";
+import { SearchInput } from "@/app/(dashboard)/components/searchInput";
 import { UserNav } from "@/app/(dashboard)/components/user-nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 // import { Button } from "@/components/ui/button";
 // import { isTeacher } from "@/lib/teacher";
 
-// import { SearchInput } from "./search-input";
 
 export const NavbarRoutes = () => {
   const user = useCurrentUser();
@@ -47,7 +46,7 @@ export const NavbarRoutes = () => {
       <div className="ml-auto flex items-center space-x-4">
       {isSearchPage && (
         <div className="hidden md:block">
-          <Search />
+          <SearchInput />
         </div>
       )}
         <UserNav />

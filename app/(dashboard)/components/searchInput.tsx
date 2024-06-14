@@ -1,12 +1,15 @@
 "use client"
 import { Input } from "@/components/ui/input"
+import { useDebounce } from "@/hooks/use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import qs from "query-string";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 
-export function Search() {
+export function SearchInput() {
 
   const [value, setValue] = useState("")
- // const debouncedValue = useDebounce(value);
+  const debouncedValue = useDebounce(value);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -14,18 +17,20 @@ export function Search() {
 
   const currentCategoryId = searchParams.get("categoryId");
 
-  // useEffect(() => {
-  //   const url = qs.stringifyUrl({
-  //     url: pathname,
-  //     query: {
-  //       categoryId: currentCategoryId,
-  //       title: debouncedValue,
-  //     }
-  //   }, { skipEmptyString: true, skipNull: true });
+  useEffect(() => {
+    const url = qs.stringifyUrl({
+      url: pathname,
+      query: {
+        categoryId: currentCategoryId,
+        title: debouncedValue,
+      }
+    }, { skipEmptyString: true, skipNull: true });
 
-  //   router.push(url);
-  // }, [debouncedValue, currentCategoryId, router, pathname])
+    router.push(url);
+  }, [debouncedValue, currentCategoryId, router, pathname])
   return (
+
+
     // <div>
     //   <Input
     //     type="search"
@@ -33,10 +38,13 @@ export function Search() {
     //     className="md:w-[100px] lg:w-[300px]"
     //   />
     // </div>
+
+
+
     <div className="relative">
-    {/* <Search
+    <Search
       className="h-4 w-4 absolute top-3 left-3 text-slate-600"
-    /> */}
+    />
     <Input
       onChange={(e) => setValue(e.target.value)}
       value={value}

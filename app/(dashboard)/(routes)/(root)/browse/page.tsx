@@ -14,6 +14,7 @@ interface SearchPageProps {
   }
 };
 
+// As this is the server component , we can access the paramas directly from props.
 const BrowsePage = async ({
   searchParams
 }: SearchPageProps) => {
