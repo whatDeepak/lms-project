@@ -3,8 +3,8 @@
 import { Search } from "@/app/(dashboard)/components/search";
 import { UserNav } from "@/app/(dashboard)/components/user-nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { usePathname } from "next/navigation";
 
-// import { UserButton, useAuth } from "@clerk/nextjs";
 // import { usePathname } from "next/navigation";
 // import { LogOut } from "lucide-react";
 // import Link from "next/link";
@@ -15,23 +15,18 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 // import { SearchInput } from "./search-input";
 
 export const NavbarRoutes = () => {
-  // const { userId } = useAuth();
-  // const pathname = usePathname();
+  const user = useCurrentUser();
+  const pathname = usePathname();
 
   // const isTeacherPage = pathname?.startsWith("/teacher");
   // const isCoursePage = pathname?.includes("/courses");
-  // const isSearchPage = pathname === "/search";
-  const user = useCurrentUser();
+   const isSearchPage = pathname === "/browse";
   const firstName = user?.name?.split(' ')[0]; // Get the first name
   const formattedName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
 
   return (
     <>
-      {/* {isSearchPage && (
-        <div className="hidden md:block">
-          <SearchInput />
-        </div>
-      )}
+      {/* 
       <div className="flex gap-x-2 ml-auto">
         {isTeacherPage || isCoursePage ? (
           <Link href="/">
@@ -47,13 +42,14 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : null}
-        <UserButton
-          afterSignOutUrl="/"
-        />
       </div> */}
       <p className="text-lg md:text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
       <div className="ml-auto flex items-center space-x-4">
-        <Search />
+      {isSearchPage && (
+        <div className="hidden md:block">
+          <Search />
+        </div>
+      )}
         <UserNav />
       </div>
     </>
