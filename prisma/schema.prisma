@@ -1,0 +1,156 @@
+
+// prisma/schema.prisma
+datasource db {
+  provider  = "mongodb"
+  url       = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+   previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  USER
+}
+
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  name          String?
+  rollNo        String?   @default("")
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole? @default(USER)
+  accounts      Account[]
+}
+
+model Account {
+  id                 String  @id @default(cuid()) @map("_id")
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Teacher {
+  id    String @id @default(cuid()) @map("_id")
+  email String @unique
+}
+
+model Course {
+  id String @id @default(cuid()) @map("_id")
+  userId String
+  title String 
+  description String? 
+  imageUrl String? 
+  isPublished Boolean @default(false)
+
+  categoryId String?
+  category Category? @relation(fields: [categoryId], references: [id])
+  
+  chapters Chapter[]
+  attachments Attachment[]
+  purchases Purchase[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+   @@fulltext([title])
+}
+
+model Category {
+  id String @id @default(cuid()) @map("_id")
+  name String @unique
+  courses Course[]
+}
+
+model Attachment {
+  id String @id @default(cuid()) @map("_id")
+  name String
+  url String 
+
+  courseId String
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+
+model Chapter {
+  id String @id @default(cuid()) @map("_id")
+  title String
+  description String? 
+  videoUrl String?
+  position Int
+  isPublished Boolean @default(false)
+  isFree Boolean @default(false)
+
+  muxData MuxData?
+
+  courseId String
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userProgress UserProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model MuxData {
+  id String @id @default(cuid()) @map("_id")
+  assetId String
+  playbackId String?
+
+  chapterId String @unique
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress {
+  id String @id @default(cuid()) @map("_id")
+  userId String
+
+  chapterId String
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  isCompleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
+  @@unique([userId, chapterId])
+}
+
+model Purchase {
+  id String @id @default(cuid()) @map("_id")
+  userId String
+
+  courseId String
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
