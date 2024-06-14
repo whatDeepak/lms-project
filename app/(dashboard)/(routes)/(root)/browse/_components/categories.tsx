@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import qs from "query-string";
 import { Category } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 interface CategoriesProps {
   items: Category[];
@@ -30,14 +31,17 @@ export const Categories = ({
     const currentCategoryId = searchParams.get("categoryId");
     const currentTitle = searchParams.get("title");
   
+    const [value, setValue]= useState("");
     const isSelected = currentCategoryId === value;
+
   
-    const onClick = () => {
+    const onClick = (value: string) => {
+      setValue(value);
       const url = qs.stringifyUrl({
         url: pathname,
         query: {
           title: currentTitle,
-          categoryId: isSelected ? null : value,
+          categoryId: value,
         }
       }, { skipNull: true, skipEmptyString: true });
   
@@ -51,10 +55,10 @@ export const Categories = ({
     
         <button
         key={item.id}
-        onClick={onClick}
+        onClick={()=>onClick(item.id)}
         className={cn(
           "py-2 px-3 text-sm border border-slate-200 rounded-full flex items-center gap-x-1 hover:border-sky-700 transition",
-          isSelected && "border-sky-700 bg-sky-200/20 text-sky-800"
+           (currentCategoryId ===value) && "border-sky-700 bg-sky-200/20 text-sky-800"
         )}
         type="button"
       >

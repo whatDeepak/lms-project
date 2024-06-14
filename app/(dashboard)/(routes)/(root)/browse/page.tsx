@@ -5,7 +5,7 @@ import { getCourses } from "@/actions/Courses/get-courses";
 import { CoursesList } from "@/components/courses-list";
 
 import { Categories } from "./_components/categories";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { currentUser } from "@/lib/auth";
 
 interface SearchPageProps {
   searchParams: {
@@ -17,11 +17,13 @@ interface SearchPageProps {
 const BrowsePage = async ({
   searchParams
 }: SearchPageProps) => {
-  const user = useCurrentUser();
+  const user = await currentUser();
+  let userId = user?.id ?? "";
 
-  if (!user) {
-    return redirect("/");
-  }
+if (!userId) {
+  return redirect("/");
+}
+
 
   const categories = await db.category.findMany({
     orderBy: {
@@ -30,7 +32,7 @@ const BrowsePage = async ({
   });
 
   const courses = await getCourses({
-   userId: user.id!   ,
+   userId: userId ,
     ...searchParams,
   });
 
@@ -46,4 +48,4 @@ const BrowsePage = async ({
    );
 }
  
-export default SearchPage;
+export default BrowsePage;
