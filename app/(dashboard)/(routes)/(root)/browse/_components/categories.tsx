@@ -35,13 +35,17 @@ export const Categories = ({
     const isSelected = currentCategoryId === value;
 
   
-    const onClick = (value: string) => {
-      setValue(value);
+    const onClick = (val: string) => {
+      let newCategoryId = val;
+
+      if (currentCategoryId === val) {
+        newCategoryId = "";
+      }
       const url = qs.stringifyUrl({
         url: pathname,
         query: {
           title: currentTitle,
-          categoryId: value,
+          categoryId: newCategoryId,
         }
       }, { skipNull: true, skipEmptyString: true });
   
