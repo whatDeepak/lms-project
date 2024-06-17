@@ -10,6 +10,7 @@ import { Attachment, Course } from "@prisma/client";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
+import { FileUpload } from "@/components/file-upload";
 
 interface AttachmentFormProps {
   initialData: Course & { attachments: Attachment[] };
@@ -110,14 +111,14 @@ export const AttachmentForm = ({
       )}
       {isEditing && (
         <div>
-          {/* <FileUpload
+          <FileUpload
             endpoint="courseAttachment"
             onChange={(url) => {
               if (url) {
                 onSubmit({ url: url });
               }
             }}
-          /> */}
+          />
           <div className="text-xs text-muted-foreground mt-4">
             Add anything your students might need to complete the course.
           </div>
