@@ -30,17 +30,6 @@ export function SearchInput() {
   }, [debouncedValue, currentCategoryId, router, pathname])
   return (
 
-
-    // <div>
-    //   <Input
-    //     type="search"
-    //     placeholder="Search..."
-    //     className="md:w-[100px] lg:w-[300px]"
-    //   />
-    // </div>
-
-
-
     <div className="relative">
     <Search
       className="h-4 w-4 absolute top-3 left-3 text-slate-600"
