@@ -78,12 +78,12 @@ const ChapterIdPage = async ({
                   Complete all fields {completionText}
                 </span>
               </div>
-              {/* <ChapterActions
+              <ChapterActions
                 disabled={!isComplete}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 isPublished={chapter.isPublished}
-              /> */}
+              />
             </div>
           </div>
         </div>
@@ -115,11 +115,11 @@ const ChapterIdPage = async ({
                 Add a video
               </h2>
             </div>
-            {/* <ChapterVideoForm
+            <ChapterVideoForm
               initialData={chapter}
               chapterId={params.chapterId}
               courseId={params.courseId}
-            /> */}
+            />
           </div>
         </div>
       </div>
