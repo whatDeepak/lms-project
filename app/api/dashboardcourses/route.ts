@@ -1,6 +1,8 @@
-import { Category, Chapter, Course } from "@prisma/client";
-import { db } from "@/lib/db";
-import { getProgress } from "./get-progress";
+// app/api/dashboardcourses/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { Course, Category, Chapter } from "@prisma/client";
+import { getProgress } from '@/actions/Courses/get-progress';
 
 type CourseWithProgress = Course & {
   category: Category;
@@ -13,7 +15,14 @@ type DashboardCourses = {
   coursesInProgress: CourseWithProgress[];
 };
 
-export const getDashboardCourses = async (userId: string): Promise<DashboardCourses> => {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Invalid userId' }, { status: 400 });
+  }
+
   try {
     const allCourses = await db.course.findMany({
       include: {
@@ -38,15 +47,18 @@ export const getDashboardCourses = async (userId: string): Promise<DashboardCour
     const completedCourses = courses.filter((course) => course.progress === 100);
     const coursesInProgress = courses.filter((course) => (course.progress ?? 0) < 100);
 
-    return {
+    const dashboardCourses: DashboardCourses = {
       completedCourses,
       coursesInProgress,
     };
+
+    return NextResponse.json(dashboardCourses, { status: 200 });
   } catch (error) {
     console.error("[GET_DASHBOARD_COURSES]", error);
-    return {
+    return NextResponse.json({
+      error: 'Failed to fetch dashboard courses',
       completedCourses: [],
       coursesInProgress: [],
-    };
+    }, { status: 500 });
   }
-};
+}
