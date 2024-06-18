@@ -1,56 +1,62 @@
+import Mux from "@mux/mux-node";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 
-// export async function DELETE(
-//   req: Request,
-//   { params }: { params: { courseId: string } }
-// ) {
-//   try {
-//     const user = await currentUser();
-//     let userId = user?.id ?? "";
+const { video } = new Mux({
+  tokenId: process.env.MUX_TOKEN_ID,
+  tokenSecret: process.env.MUX_TOKEN_SECRET,
+}); 
 
-//     if (!userId) {
-//       return new NextResponse("Unauthorized", { status: 401 });
-//     }
+export async function DELETE(
+  req: Request,
+  { params }: { params: { courseId: string } }
+) {
+  try {
+    const user = await currentUser();
+    let userId = user?.id ?? "";
 
-//     const course = await db.course.findUnique({
-//       where: {
-//         id: params.courseId,
-//         userId: userId,
-//       },
-//       include: {
-//         chapters: {
-//           include: {
-//             muxData: true,
-//           }
-//         }
-//       }
-//     });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-//     if (!course) {
-//       return new NextResponse("Not found", { status: 404 });
-//     }
+    const course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+        userId: userId,
+      },
+      include: {
+        chapters: {
+          include: {
+            muxData: true,
+          }
+        }
+      }
+    });
 
-//     for (const chapter of course.chapters) {
-//       if (chapter.muxData?.assetId) {
-//         await video.assets.delete(chapter.muxData.assetId);
-//       }
-//     }
+    if (!course) {
+      return new NextResponse("Not found", { status: 404 });
+    }
 
-//     const deletedCourse = await db.course.delete({
-//       where: {
-//         id: params.courseId,
-//       },
-//     });
+    for (const chapter of course.chapters) {
+      if (chapter.muxData?.assetId) {
+        await video.assets.delete(chapter.muxData.assetId);
+      }
+    }
 
-//     return NextResponse.json(deletedCourse);
-//   } catch (error) {
-//     console.log("[COURSE_ID_DELETE]", error);
-//     return new NextResponse("Internal Error", { status: 500 });
-//   }
-// }
+    const deletedCourse = await db.course.delete({
+      where: {
+        id: params.courseId,
+      },
+    });
+
+    return NextResponse.json(deletedCourse);
+  } catch (error) {
+    console.log("[COURSE_ID_DELETE]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
 
 export async function PATCH(
   req: Request,
