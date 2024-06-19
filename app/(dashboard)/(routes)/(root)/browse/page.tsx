@@ -6,6 +6,7 @@ import { CoursesList } from "@/components/courses-list";
 
 import { Categories } from "./_components/categories";
 import { currentUser } from "@/lib/auth";
+import { SearchInput } from "@/app/(dashboard)/components/searchInput";
 
 interface SearchPageProps {
   searchParams: {
@@ -39,6 +40,9 @@ if (!userId) {
 
   return (
     <>
+      <div className="px-6 pt-6 md:hidden md:mb-0 block">
+        <SearchInput />
+      </div>
       <div className="p-6 space-y-4">
         <Categories
           items={categories}

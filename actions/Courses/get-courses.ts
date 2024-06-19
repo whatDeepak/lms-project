@@ -39,6 +39,11 @@ export const getCourses = async ({
             id: true,
           }
         },
+        purchases: {
+          where: {
+            userId,
+          }
+        }
       },
       orderBy: {
         createdAt: "desc",
