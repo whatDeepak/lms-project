@@ -7,8 +7,12 @@ import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+interface socialProps {
+  type: "signIn"| "signUp"
+};
 
-export const Social = () => {
+
+export const Social = ({type}: socialProps) => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
@@ -26,7 +30,7 @@ export const Social = () => {
         onClick={() => onClick("google")}
       >
         {/* <FcGoogle className="h-5 w-5" /> */}
-        Create an account
+        {type==="signUp"? `Create an Account` : `Log in here` }  
       </Button>
     </div>
   );

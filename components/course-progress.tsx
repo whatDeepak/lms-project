@@ -26,14 +26,10 @@ export const CourseProgress = ({
     <div>
       <Progress
         className="h-2"
-        // value={value}
-        // variant={variant}
+         value={value}
+         variant={variant}
       />
-      {/* <p className={cn(
-        "font-medium mt-2 text-sky-700",
-        colorByVariant[variant || "default"],
-        sizeByVariant[size || "default"],
-      )}> */}
+  
       <p className={cn(
         "font-medium mt-2 text-input-border",
         colorByVariant["default"],

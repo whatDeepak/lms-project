@@ -13,7 +13,6 @@ body,
 :root {
   height: 100%;
 }
-
 .dashboard-container {
   overflow-x: hidden;
 }
@@ -90,3 +89,9 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.ql-container {
+  font-size: 16px !important;
+}
+
+@import "~@uploadthing/react/styles.css";

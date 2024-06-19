@@ -3,7 +3,8 @@ import { Inter, Poppins } from 'next/font/google'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
 import './globals.css'
-import { Toaster } from "@/components/ui/sonner";
+import { ConfettiProvider } from '@/components/providers/confetti-provider'
+import { ToastProvider } from '@/components/providers/toaster-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 const poppins = Poppins({
@@ -28,7 +29,8 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="en">
         <body className={poppins.className}>
-          <Toaster />
+          <ConfettiProvider />
+          <ToastProvider />
           {children}
         </body>
       </html>

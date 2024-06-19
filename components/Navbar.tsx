@@ -36,13 +36,13 @@ function NavBar() {
             >
               Login
             </p> */}
-            {/* <Link href={"/auth/login"}>
+            <Link href={"/auth/login"}>
             <Button
             variant="ghost"
             size="lg"
-            className="text-md"
+            className="text-md hover:bg-custom-primary/15"
             >Sign In</Button>
-            </Link> */}
+            </Link>
            
            <Link href={"/auth/register"}>
            <Button
