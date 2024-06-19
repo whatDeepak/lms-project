@@ -45,6 +45,9 @@ const ChapterIdPage = async ({
 
   return ( 
     <div>
+
+   
+    <div >
       {userProgress?.isCompleted && (
         <Banner
           variant="success"
@@ -57,7 +60,7 @@ const ChapterIdPage = async ({
           label="You need to purchase this course to watch this chapter."
         />
       )}
-      <div className="flex flex-col max-w-4xl mx-auto pb-20">
+      <div className="flex flex-col max-w-4xl mx-auto pb-20  p-4 space-y-6 lg:mr-72">
         <div className="p-4">
           <VideoPlayer
             chapterId={params.chapterId}
@@ -102,7 +105,7 @@ const ChapterIdPage = async ({
           <div>
             <Preview value={chapter.description!} />
           </div>
-          {!!attachments.length && (
+          {/* {!!attachments.length && (
             <>
               <Separator />
               <div className="p-4">
@@ -121,9 +124,39 @@ const ChapterIdPage = async ({
                 ))}
               </div>
             </>
-          )}
+          )} */}
         </div>
       </div>
+
+      </div>
+      <div className=" hidden lg:block fixed right-0 top-[80px] bottom-0 w-64 pt-4 space-y-4 md:w-72 bg-white shadow-lg">
+         <div className="flex flex-col">
+             
+           <h2 className="text-lg font-medium ml-4 pb-4">Attachments</h2>
+      {!!attachments.length && (
+            <>
+                {attachments.map((attachment) => (
+                  <div key={attachment.id}>
+              <div  className="pb-2  w-full" >
+                  <a 
+                    href={attachment.url}
+                    target="_blank"
+                    
+                    className="flex items-center  p-3 w-full  border text-slate-500 text-sm font-[500] rounded-md hover:underline transition-all hover:text-input-border hover:bg-slate-300/20"
+                  >
+                    <File />
+                    <p className="line-clamp-1">
+                      {attachment.name}
+                    </p>
+                  </a>
+              </div>
+                <Separator />
+                </div>
+                ))}
+            </>
+          )}
+            </div>
+        </div>
     </div>
    );
 }

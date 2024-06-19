@@ -20,6 +20,7 @@ import { CoursesList } from "@/components/courses-list";
 import { getCourses } from "@/actions/Courses/get-courses";
 import { redirect } from "next/navigation";
 import { CourseCard } from "@/components/course-card";
+import { InfoCard } from "./_components/info-card";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ enum UserRole {
 const Dashboard = () => {
   const user = useCurrentUser();
   const [showDialog, setShowDialog] = useState(false);
+  const [data, setData] = useState<any>();
   if (!user) {
     redirect("/");
   }
@@ -54,6 +56,8 @@ const Dashboard = () => {
     checkRollNo();
   }, [user]);
 
+
+
   const handleCloseDialog = () => {
     // Close the Dialog
     setShowDialog(false);
@@ -68,26 +72,8 @@ const Dashboard = () => {
         {/* Main content area */}
         <div className="flex-1 p-4 space-y-6 md:mr-72">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Completed Courses
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">25</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  In Progress Courses
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">15</div>
-              </CardContent>
-            </Card>
+        
+            <InfoCard userId={user.id!} />
           </div>
           {/* <CoursesList items={} /> */}
           <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ">
