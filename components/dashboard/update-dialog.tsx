@@ -64,7 +64,7 @@ export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) =
                     <DialogHeader>
                         <DialogTitle>Complete your Profile</DialogTitle>
                         <DialogDescription>
-                            Enter details to complete your profile. Click save when you're done.
+                            Enter details to complete your profile. Click save when you&apos;re done.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">

@@ -12,6 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { cn } from "@/lib/utils";
+import Image from "next/image"
 
 const reviews = [
   {
@@ -76,7 +77,7 @@ const AuthLayout = ({
                           </div>
                           {/* Dynamic image and name */}
                           <div className="flex items-start mt-5">
-                            <img src={review.imageUrl} alt={review.name} className="w-10 h-10 rounded-full mr-3" />
+                            <Image src={review.imageUrl} alt={review.name} className="w-10 h-10 rounded-full mr-3" />
                             <div>
                               <span className="text-white text-sm block">{review.name}</span>
                               <span className="text-white text-xs block">{review.job}</span>
