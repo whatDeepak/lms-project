@@ -16,7 +16,7 @@ interface CardWrapperProps {
   backButtonLabel: string;
   backButtonHref: string;
   showSocial?: boolean;
-  type: "signIn"| "signUp"
+  type: "signIn"| "signUp" | "error"
 };
 
 export const CardWrapper = ({
