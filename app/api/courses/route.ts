@@ -9,6 +9,8 @@ export async function POST(
   try {
     const user = await currentUser();
     let userId = user?.id ?? "";
+
+    console.log(user?.role)
     
     const { title } = await req.json();
 
