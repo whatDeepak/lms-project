@@ -1,75 +1,52 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import qs from "query-string";
 import { Category } from "@prisma/client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { GiChemicalDrop } from "react-icons/gi";
+import { IoIosConstruct } from "react-icons/io";
+import { FaIndustry, FaLaptop } from "react-icons/fa";
+import { AiOutlineControl } from "react-icons/ai";
+import { GiGears, GiSewingString } from "react-icons/gi";
+import { MdBiotech, MdElectricBolt } from "react-icons/md";
+import { IoHardwareChip, IoGrid } from "react-icons/io5";
+import { PiCircuitryFill } from "react-icons/pi";
+
+import { IconType } from "react-icons";
+import { CategoryItem } from "./category-item";
 
 interface CategoriesProps {
   items: Category[];
 }
 
-// const iconMap: Record<Category["name"], IconType> = {
-//   "Music": FcMusic,
-//   "Photography": FcOldTimeCamera,
-//   "Fitness": FcSportsMode,
-//   "Accounting": FcSalesPerformance,
-//   "Computer Science": FcMultipleDevices,
-//   "Filming": FcFilmReel,
-//   "Engineering": FcEngineering,
-// };
+const iconMap: Record<string, IconType> = {
+  "All": IoGrid,
+  "Biotechnology": MdBiotech,
+  "Chemical Engineering": GiChemicalDrop,
+  "Civil Engineering": IoIosConstruct,
+  "Computer Science and Engineering": IoHardwareChip,
+  "Electronics and Communication Engineering": PiCircuitryFill,
+  "Electrical Engineering": MdElectricBolt,
+  "Industrial and Production Engineering": FaIndustry,
+  "Information Technology": FaLaptop,
+  "Instrumentation and Control Engineering": AiOutlineControl,
+  "Mechanical Engineering": GiGears,
+  "Textile Technology": GiSewingString,
+};
 
 export const Categories = ({
   items,
 }: CategoriesProps) => {
-
-    const pathname = usePathname();
-    const router = useRouter();
-    const searchParams = useSearchParams();
-  
-    const currentCategoryId = searchParams.get("categoryId");
-    const currentTitle = searchParams.get("title");
-  
-    const [value, setValue]= useState("");
-    const isSelected = currentCategoryId === value;
-
-  
-    const onClick = (val: string) => {
-      let newCategoryId = val;
-
-      if (currentCategoryId === val) {
-        newCategoryId = "";
-      }
-      const url = qs.stringifyUrl({
-        url: pathname,
-        query: {
-          title: currentTitle,
-          categoryId: newCategoryId,
-        }
-      }, { skipNull: true, skipEmptyString: true });
-  
-      router.push(url);
-    };
-  
+  const allCategory = { id: "all", name: "All" };
+  const categories = [allCategory, ...items];
 
   return (
     <div className="flex items-center gap-x-2 overflow-x-auto pb-2">
-      {items.map((item) => (
-    
-        <button
-        key={item.id}
-        onClick={()=>onClick(item.id)}
-        className={cn(
-          "py-2 px-3 text-sm border border-slate-200 rounded-full flex items-center gap-x-1 hover:border-sky-700 transition",
-           (currentCategoryId ===item.id) && "border-sky-700 bg-sky-200/20 text-sky-800"
-        )}
-        type="button"
-      >
-        <div className="truncate">
-          {item.name}
-        </div>
-      </button>
+      {categories.map((item) => (
+        <CategoryItem
+          key={item.id}
+          label={item.name}
+          icon={iconMap[item.name]}
+          value={item.id}
+        />
       ))}
     </div>
   )
