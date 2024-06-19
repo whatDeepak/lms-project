@@ -184,6 +184,9 @@ const SettingsPage = () => {
                         <SelectItem value={UserRole.ADMIN}>
                           Admin
                         </SelectItem>
+                        <SelectItem value={UserRole.TEACHER}>
+                          Teacher
+                        </SelectItem>
                         <SelectItem value={UserRole.USER}>
                           User
                         </SelectItem>

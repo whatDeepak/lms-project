@@ -78,7 +78,7 @@ export const settings = async (
     user: {
       name: updatedUser.name,
       email: updatedUser.email,
-      role: updatedUser.role,
+      role: updatedUser.role ?? undefined,
     }
   });
 

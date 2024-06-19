@@ -9,7 +9,7 @@ const font = Poppins({
 
 interface HeaderProps {
   label: string;
-  type: "signIn"| "signUp"
+  type: "signIn"| "signUp" | "error"
 };
 
 export const Header = ({
