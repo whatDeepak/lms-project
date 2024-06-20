@@ -32,8 +32,6 @@ export const InfoCard =({
           const response = await fetch(`/api/dashboardcourses?userId=${userId}`);
           const data: DashboardCourses = await response.json();
           setDashboardCourses(data);
-          console.log(userId);
-          console.log(data);
         } catch (error) {
           console.error("Failed to fetch dashboard courses:", error);
         }

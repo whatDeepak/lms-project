@@ -52,7 +52,6 @@ const Dashboard = () => {
         console.error("Error checking rollNo:", error);
       }
     };
-    console.log("roll:", user?.rollNo);
     checkRollNo();
   }, [user]);
 
