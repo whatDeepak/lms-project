@@ -6,7 +6,10 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
-function NavBar() {
+interface NavBarProps{
+   userId?:  string
+};
+function NavBar({userId}: NavBarProps) {
   const [menu, setMenu] = useState(false);
   const toggleMenu = () => {
     setMenu(!menu);
@@ -31,25 +34,24 @@ function NavBar() {
      
           </div>
           <div className="flex items-center gap-1 select-none">
-            {/* <p
-              className="hover:text-primary cursor-pointer flex items-center gap-2  font-[500] text-gray"
-            >
-              Login
-            </p> */}
-            <Link href={"/auth/login"}>
+          
+          {!userId && <Link href={"/auth/login"}>
             <Button
             variant="ghost"
             size="lg"
             className="text-md hover:bg-custom-primary/15"
             >Sign In</Button>
-            </Link>
+            </Link>}
+            
            
            <Link href={"/auth/register"}>
            <Button
             variant="outline"
             size="lg"
             className="text-md"
-            >Sign Up</Button>
+            >
+               {userId? "Sign Out": "Sign Up"} 
+              </Button>
            </Link>
           
           </div>

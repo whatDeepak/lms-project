@@ -3,17 +3,17 @@ import homebg from "@/public/homebg.svg"; // Import the SVG file
 import NavBar from "@/components/Navbar";
 import { Button } from "./ui/button";
 import Link from "next/link";
-export default function HeroSection() {
+import { User, UserRole } from "@prisma/client";
+
+interface HeroProps {
+  userId?: string 
+};
+export default function HeroSection(
+  {userId}:HeroProps
+) {
   return (
     <div>
-      <NavBar />
-      {/* <div
-        className="relative h-screen bg-cover bg-center -ml-[64px]  overflow-hidden"
-        style={{
-          backgroundImage: `url(${homebg.src})`, // Use the imported SVG as the background image
-        }}
-      >
-      </div> */}
+      <NavBar userId={userId} />
       <section className="landing-section">
         <div className="block mx-auto max-w-[1200px] pt-[50px] sm:min-h-[500px]">
           <div className="flex flex-col items-start justify-between sm:flex-row sm:justify-between sm:items-center ">
@@ -29,11 +29,16 @@ export default function HeroSection() {
                 Discover a new way to communicate & connect with fast, easy &
                 unlimited free chat today!
               </p>
-              <Link href={"/auth/register"}>
+              {!userId &&  <Link href={"/auth/register"}>
                 <Button variant="default" size="custom">
                   Get Started
                 </Button>
-              </Link>
+              </Link>}
+             {userId &&  <Link href={"/dashboard"}>
+                <Button variant="default" size="custom">
+                  Get Started
+                </Button>
+              </Link>}
             </div>
             <div className="text-left sm:max-w-none sm:-mr-[50px] md:-mr-[100px] sm:min-h-[400px] mt-[20px] sm:mt-0 ">
               <Image
