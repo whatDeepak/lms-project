@@ -82,7 +82,6 @@ export const getChapter = async ({
       userProgress,
     };
   } catch (error) {
-    console.log("[GET_CHAPTER]", error);
     return {
       chapter: null,
       course: null,
