@@ -1,9 +1,5 @@
-// components/SkeletonLoader.tsx
-
 import React from 'react';
-import { Skeleton } from '@/components/ui/skeleton'; // Import your Skeleton component from your UI library
-import { LucideIcon } from 'lucide-react'; // Assuming LucideIcon is used in your InfoCard
-import { IconBadge } from '@/components/icon-badge'; // Assuming IconBadge is used in your InfoCard
+import { Skeleton } from '@/components/ui/skeleton';
 
 const SkeletonLoader: React.FC = () => {
   return (
