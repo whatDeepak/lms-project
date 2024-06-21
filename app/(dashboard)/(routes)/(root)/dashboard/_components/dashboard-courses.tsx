@@ -1,13 +1,13 @@
 // components/DashboardCoursesCard.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Category, Chapter, Course } from '@prisma/client';
-import { db } from '@/lib/db';
-import { getProgress } from '@/actions/Courses/get-progress';
-import { InfoCard } from './info-card';
-import { CoursesList } from '@/components/courses-list';
-import { CheckCircle, Clock } from 'lucide-react';
-import SkeletonLoader from './skeleton-loader';
+import React, { useState, useEffect } from "react";
+import { Category, Chapter, Course } from "@prisma/client";
+import { db } from "@/lib/db";
+import { getProgress } from "@/actions/Courses/get-progress";
+import { InfoCard } from "./info-card";
+import { CoursesList } from "@/components/courses-list";
+import { CheckCircle, Clock } from "lucide-react";
+import SkeletonLoader from "./skeleton-loader";
 
 type CourseWithProgress = Course & {
   category: Category;
@@ -22,10 +22,14 @@ interface DashboardCoursesCardProps {
 type DashboardCourses = {
   completedCourses: CourseWithProgress[];
   coursesInProgress: CourseWithProgress[];
+  additionalCourses: CourseWithProgress[];
 };
 
-const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({ userId }) => {
-  const [dashboardCourses, setDashboardCourses] = useState<DashboardCourses | null>(null);
+const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({
+  userId,
+}) => {
+  const [dashboardCourses, setDashboardCourses] =
+    useState<DashboardCourses | null>(null);
   const [loading, setLoading] = useState(true); // State for loading indicator
 
   useEffect(() => {
@@ -63,7 +67,25 @@ const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({ userId }) =
           variant="success"
         />
       </div>
-      <CoursesList items={[...(dashboardCourses?.coursesInProgress ?? []), ...(dashboardCourses?.completedCourses ?? [])]} />
+      {dashboardCourses?.coursesInProgress.length === 0 &&
+      dashboardCourses?.completedCourses.length === 0 ? (
+        <div >
+          <h2 className="text-xl font-normal py-4">Explore Courses</h2>
+          <CoursesList
+          items={[
+            ...(dashboardCourses?.additionalCourses ?? []),
+          ]}
+        />
+        </div>
+      ) : (
+        <CoursesList
+          items={[
+            ...(dashboardCourses?.coursesInProgress ?? []),
+            ...(dashboardCourses?.completedCourses ?? []),
+            ...(dashboardCourses?.additionalCourses ?? []),
+          ]}
+        />
+      )}
     </div>
   );
 };
