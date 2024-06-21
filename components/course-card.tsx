@@ -4,6 +4,7 @@ import { BookOpen } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
 import { CourseProgress } from "@/components/course-progress";
+import { Badge } from "./ui/badge";
 
 interface CourseCardProps {
   id: string;
@@ -55,9 +56,11 @@ export const CourseCard = ({
               value={progress}
             />
           ) : (
-            <p className="text-md md:text-sm font-medium text-slate-700">
-              
-            </p>
+            <div>
+              <Badge variant="new">
+                Enroll in course
+              </Badge>
+            </div>
           )}
         </div>
       </div>
