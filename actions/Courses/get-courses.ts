@@ -54,6 +54,13 @@ export const getCourses = async ({
 
     const coursesWithProgress: CourseWithProgressWithCategory[] = await Promise.all(
       courses.map(async course => {
+        if (course.purchases.length === 0) {
+          return {
+            ...course,
+            progress: null,
+          }
+        }
+
         const progressPercentage = await getProgress(userId, course.id);
 
         return {
