@@ -1,16 +1,52 @@
-import { CheckCircle, Clock } from "lucide-react";
-import { InfoCard } from "./info-card";
-import { getDashboardCourses } from "@/actions/Courses/get-dashboard-courses";
-import { CoursesList } from "@/components/courses-list";
+// components/DashboardCoursesCard.tsx
+
+import React, { useState, useEffect } from 'react';
+import { Category, Chapter, Course } from '@prisma/client';
+import { db } from '@/lib/db';
+import { getProgress } from '@/actions/Courses/get-progress';
+import { InfoCard } from './info-card';
+import { CoursesList } from '@/components/courses-list';
+import { CheckCircle, Clock } from 'lucide-react';
+import SkeletonLoader from './skeleton-loader';
+
+type CourseWithProgress = Course & {
+  category: Category;
+  chapters: Chapter[];
+  progress: number | null;
+};
 
 interface DashboardCoursesCardProps {
   userId: string;
 }
 
-const DashboardCoursesCard = async ({
-  userId
-}: DashboardCoursesCardProps): Promise<JSX.Element> => {
-  const { completedCourses, coursesInProgress } = await getDashboardCourses(userId);
+type DashboardCourses = {
+  completedCourses: CourseWithProgress[];
+  coursesInProgress: CourseWithProgress[];
+};
+
+const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({ userId }) => {
+  const [dashboardCourses, setDashboardCourses] = useState<DashboardCourses | null>(null);
+  const [loading, setLoading] = useState(true); // State for loading indicator
+
+  useEffect(() => {
+    const fetchDashboardCourses = async () => {
+      try {
+        const response = await fetch(`/api/dashboardcourses?userId=${userId}`);
+        const data: DashboardCourses = await response.json();
+        setDashboardCourses(data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard courses:", error);
+      } finally {
+        setLoading(false); // Turn off loading state when data is fetched
+      }
+    };
+
+    fetchDashboardCourses();
+  }, [userId]);
+
+  if (loading) {
+    return <SkeletonLoader />; // Show skeleton loading component while waiting for data
+  }
 
   return (
     <div className="p-6 space-y-4">
@@ -18,16 +54,16 @@ const DashboardCoursesCard = async ({
         <InfoCard
           icon={Clock}
           label="In Progress"
-          numberOfItems={coursesInProgress.length}
+          numberOfItems={dashboardCourses?.coursesInProgress.length ?? 0}
         />
         <InfoCard
           icon={CheckCircle}
           label="Completed"
-          numberOfItems={completedCourses.length}
+          numberOfItems={dashboardCourses?.completedCourses.length ?? 0}
           variant="success"
         />
       </div>
-      <CoursesList items={[...coursesInProgress, ...completedCourses]} />
+      <CoursesList items={[...(dashboardCourses?.coursesInProgress ?? []), ...(dashboardCourses?.completedCourses ?? [])]} />
     </div>
   );
 };
