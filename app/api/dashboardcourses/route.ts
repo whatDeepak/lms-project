@@ -12,6 +12,7 @@ type CourseWithProgress = Course & {
 type DashboardCourses = {
   completedCourses: CourseWithProgress[];
   coursesInProgress: CourseWithProgress[];
+  additionalCourses: CourseWithProgress[];
 };
 
 export async function GET(req: NextRequest) {
@@ -67,9 +68,42 @@ export async function GET(req: NextRequest) {
     const completedCourses = coursesWithProgress.filter((course) => course.progress === 100);
     const coursesInProgress = coursesWithProgress.filter((course) => (course.progress ?? 0) < 100);
 
+    
+    const totalCourses = completedCourses.length + coursesInProgress.length;
+
+    // Fetch additional courses if needed to reach at least 6 courses
+    let additionalCourses: CourseWithProgress[] = [];
+    if (totalCourses < 6) {
+      const extraCoursesNeeded = 6 - totalCourses;
+      const additionalCourseEntities = await db.course.findMany({
+        where: {
+          id: {
+            notIn: purchasedCourseIds,
+          },
+          isPublished: true,
+        },
+        include: {
+          category: true,
+          chapters: {
+            where: {
+              isPublished: true,
+            },
+          },
+        },
+        take: extraCoursesNeeded,
+      });
+
+      additionalCourses = additionalCourseEntities.map((course) => {
+        const courseWithProgress = course as CourseWithProgress;
+        courseWithProgress.progress = 0; 
+        return courseWithProgress;
+      });
+    }
+
     const dashboardCourses: DashboardCourses = {
       completedCourses,
       coursesInProgress,
+      additionalCourses,
     };
 
     return NextResponse.json(dashboardCourses, { status: 200 });
@@ -79,6 +113,7 @@ export async function GET(req: NextRequest) {
       error: 'Failed to fetch dashboard courses',
       completedCourses: [],
       coursesInProgress: [],
+      additionalCourses: [],
     }, { status: 500 });
   }
 }
