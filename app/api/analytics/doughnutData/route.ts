@@ -45,26 +45,19 @@ export async function GET(req: NextRequest) {
       return acc;
     }, {});
 
-    // Convert counts to percentages
-    const totalCourses = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0);
-    const categories = Object.entries(categoryCounts).map(([category, count]) => ({
-      category,
-      percentage: (count / totalCourses) * 100,
-    }));
-
-    // Sort categories by percentage and take the top 3
-    categories.sort((a, b) => b.percentage - a.percentage);
-    const topCategories = categories.slice(0, 3);
-    const otherCategories = categories.slice(3);
-
-    // Calculate the "Others" category
-    const othersPercentage = otherCategories.reduce((sum, cat) => sum + cat.percentage, 0);
-
-    // Prepare chart data
-    const chartLabels = [...topCategories.map(cat => cat.category), 'Others'];
-    const chartData = [...topCategories.map(cat => cat.percentage), othersPercentage];
-
-    return NextResponse.json({ labels: chartLabels, data: chartData }, { status: 200 });
+     // Sort categories by count and take the top 3
+     const sortedCategories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
+     const topCategories = sortedCategories.slice(0, 3);
+     const otherCategories = sortedCategories.slice(3);
+ 
+     // Calculate the "Others" count
+     const othersCount = otherCategories.reduce((sum, cat) => sum + cat[1], 0);
+ 
+     // Prepare chart data
+     const chartLabels = [...topCategories.map(cat => cat[0]), 'Others'];
+     const chartData = [...topCategories.map(cat => cat[1]), othersCount];
+ 
+     return NextResponse.json({ labels: chartLabels, data: chartData }, { status: 200 });
   } catch (error) {
     console.error('[GET_CHART_DATA]', error);
     return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 });
