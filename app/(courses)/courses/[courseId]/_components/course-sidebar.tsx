@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { CourseProgress } from "@/components/course-progress";
 import { CourseSidebarItem } from "./course-sidebar-item";
+import { checkPurchase } from "@/actions/Courses/get-purchase";
+import { currentUser } from "@/lib/auth";
 
 
 interface CourseSidebarProps {
@@ -19,7 +21,9 @@ export const CourseSidebar = async ({
   course,
   progressCount,
 }: CourseSidebarProps) => {
-
+  const user = await currentUser();
+  let userId = user?.id ?? "";
+  const purchased = await checkPurchase(userId, course.id);
 
   return (
     <div className="h-full w-72 border-r flex flex-col overflow-y-auto shadow-sm">
@@ -27,12 +31,14 @@ export const CourseSidebar = async ({
         <h1 className="font-semibold">
           {course.title}
         </h1>
+        {purchased && (
           <div className="mt-10">
             <CourseProgress
               variant="success"
               value={progressCount}
             />
           </div>
+        )}
       </div>
       <div className="flex flex-col w-full">
         {course.chapters.map((chapter) => (

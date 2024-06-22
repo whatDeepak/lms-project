@@ -1,5 +1,4 @@
 import { Category, Course } from "@prisma/client";
-
 import { db } from "@/lib/db";
 import { getProgress } from "./get-progress";
 
@@ -24,9 +23,12 @@ export const getCourses = async ({
     const courses = await db.course.findMany({
       where: {
         isPublished: true,
-        title: {
-          contains: title,
-        },
+        ...(title && {
+          title: {
+            contains: title,
+            mode: "insensitive", // Case-insensitive search
+          },
+        }),
         categoryId,
       },
       include: {
@@ -37,21 +39,28 @@ export const getCourses = async ({
           },
           select: {
             id: true,
-          }
+          },
         },
         purchases: {
           where: {
             userId,
-          }
-        }
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
-      }
+      },
     });
 
     const coursesWithProgress: CourseWithProgressWithCategory[] = await Promise.all(
       courses.map(async course => {
+        if (course.purchases.length === 0) {
+          return {
+            ...course,
+            progress: null,
+          }
+        }
+
         const progressPercentage = await getProgress(userId, course.id);
 
         return {

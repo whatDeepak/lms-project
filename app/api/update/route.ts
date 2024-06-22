@@ -6,9 +6,6 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { userId, rollNo } = body;
 
-        console.log(userId);
-        console.log(rollNo);
-
         if (!userId || !rollNo) {
             return new NextResponse('Missing userId or rollNo', { status: 400 });
         }

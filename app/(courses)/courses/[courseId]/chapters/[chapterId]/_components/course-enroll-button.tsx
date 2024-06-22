@@ -19,15 +19,20 @@ export const CourseEnrollButton = ({
     try {
       setIsLoading(true);
 
-      const response = await axios.post(`/api/courses/${courseId}/checkout`)
+      const response = await axios.post(`/api/courses/${courseId}/enroll`);
 
-      window.location.assign(response.data.url);
-    } catch {
+      if (response.status === 200) {
+        toast.success("Successfully enrolled in the course!");
+        window.location.reload();
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Button
@@ -36,7 +41,7 @@ export const CourseEnrollButton = ({
       size="sm"
       className="w-full md:w-auto"
     >
-      Enroll the course
+      Enroll in the course
     </Button>
-  )
-}
+  );
+};
