@@ -6,6 +6,7 @@ import { CourseProgress } from "@/components/course-progress";
 import { CourseSidebarItem } from "./course-sidebar-item";
 import { checkPurchase } from "@/actions/Courses/get-purchase";
 import { currentUser } from "@/lib/auth";
+import { Logo } from "@/components/logo";
 
 type progressProps = {
   progressPercentage: number;
@@ -32,8 +33,11 @@ export const CourseSidebar = async ({
    const completionText = `(${progress.completedChapters}/${progress.totalChapters})`;
   return (
     <div className="h-full w-72 border-r flex flex-col overflow-y-auto shadow-sm">
-      <div className="p-8 flex flex-col border-b">
-        <h1 className="font-semibold">
+      <div className="p-8">
+      <Logo />
+      </div>
+      <div className="px-8 flex flex-col border-b">
+        <h1 className="font-semibold ">
           {course.title}
         </h1>
         {purchased && (
@@ -41,7 +45,7 @@ export const CourseSidebar = async ({
           <p>
            Completed Chapters {completionText}
           </p>
-          <div className="">
+          <div className="py-4">
             <CourseProgress
               variant="success"
               value={progress.progressPercentage}
