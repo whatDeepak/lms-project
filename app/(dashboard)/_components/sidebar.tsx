@@ -1,6 +1,6 @@
-import { UserButton } from "../components/user-button"
 import { SidebarRoutes } from "./sidebar-routes"
 import { Logo } from "@/components/logo"
+import { UserButton } from "./user-button"
 
 export const Sidebar = () => {
   return (

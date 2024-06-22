@@ -5,8 +5,8 @@ import { Poppins } from "next/font/google";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { db } from "@/lib/db";
-import { CalendarDateRangePicker } from "../../../components/date-range-picker";
-import DoughnutChart from "../../../components/doughnutChart";
+import { CalendarDateRangePicker } from "../../../_components/date-range-picker";
+import DoughnutChart from "../../../_components/doughnutChart";
 import { redirect } from "next/navigation";
 import DashboardCoursesCard from "./_components/dashboard-courses";
 
