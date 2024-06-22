@@ -21,10 +21,15 @@ enum UserRole {
   USER = "USER",
 }
 
+interface CategoryData {
+  category: string;
+  percentage: number;
+}
+
 const Dashboard = () => {
   const user = useCurrentUser();
   const [showDialog, setShowDialog] = useState(false);
-  const [data, setData] = useState<any>();
+  const [chartData, setChartData] = useState<{ labels: string[]; data: number[] }>({ labels: [], data: [] });
   if (!user) {
     redirect("/");
   }
@@ -43,7 +48,26 @@ const Dashboard = () => {
     checkRollNo();
   }, [user]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/analytics/doughnutData?userId=${user.id}`);
+        const data = await response.json();
 
+        if (response.ok) {
+          console.log(data);
+          setChartData({ labels: data.labels, data: data.data });
+        } else {
+          console.error('Failed to fetch chart data:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+      }
+    };
+
+    fetchData();
+  }, [user.id]);
+ 
 
   const handleCloseDialog = () => {
     // Close the Dialog
@@ -65,7 +89,7 @@ const Dashboard = () => {
           <div className="min-h-[326px]">
             <CalendarDateRangePicker />
           </div>
-          <DoughnutChart />
+          <DoughnutChart labels={chartData.labels} data={chartData.data}/>
         </div>
       </div>
     </>
