@@ -58,8 +58,8 @@ export async function GET(req: NextRequest) {
     const coursesWithProgress: CourseWithProgress[] = await Promise.all(
       allCourses.map(async (course) => {
         const courseWithProgress = course as CourseWithProgress;
-        const progress = await getProgress(userId, course.id);
-        courseWithProgress.progress = progress;
+      const {progressPercentage} = await getProgress(userId, course.id);
+        courseWithProgress.progress = progressPercentage;
         return courseWithProgress;
       })
     );

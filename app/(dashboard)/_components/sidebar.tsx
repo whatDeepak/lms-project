@@ -5,7 +5,7 @@ import { Logo } from "@/components/logo"
 export const Sidebar = () => {
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm">
-      <div className="p-6">
+      <div className="p-6 pt-8">
       <Logo />
       </div>
       <div className="flex flex-col w-full flex-grow">
