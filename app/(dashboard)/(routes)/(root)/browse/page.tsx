@@ -6,7 +6,7 @@ import { CoursesList } from "@/components/courses-list";
 
 import { Categories } from "./_components/categories";
 import { currentUser } from "@/lib/auth";
-import { SearchInput } from "@/app/(dashboard)/components/searchInput";
+import { SearchInput } from "@/app/(dashboard)/_components/searchInput";
 
 interface SearchPageProps {
   searchParams: {
