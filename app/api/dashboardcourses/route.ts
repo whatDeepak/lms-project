@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
 
       additionalCourses = additionalCourseEntities.map((course) => {
         const courseWithProgress = course as CourseWithProgress;
-        courseWithProgress.progress = 0; 
+        courseWithProgress.progress = null; 
         return courseWithProgress;
       });
     }

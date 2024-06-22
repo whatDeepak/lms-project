@@ -48,9 +48,12 @@ const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({
     fetchDashboardCourses();
   }, [userId]);
 
-  if (loading) {
-    return <SkeletonLoader />; // Show skeleton loading component while waiting for data
+  if (loading || !dashboardCourses) {
+    return <SkeletonLoader />; // Show skeleton loading component while waiting for data or if no data
   }
+
+  const { coursesInProgress, completedCourses, additionalCourses } =
+    dashboardCourses;
 
   return (
     <div className="p-6 space-y-4">
@@ -58,34 +61,40 @@ const DashboardCoursesCard: React.FC<DashboardCoursesCardProps> = ({
         <InfoCard
           icon={Clock}
           label="In Progress"
-          numberOfItems={dashboardCourses?.coursesInProgress.length ?? 0}
+          numberOfItems={coursesInProgress.length}
         />
         <InfoCard
           icon={CheckCircle}
           label="Completed"
-          numberOfItems={dashboardCourses?.completedCourses.length ?? 0}
+          numberOfItems={completedCourses.length}
           variant="success"
         />
       </div>
-      {dashboardCourses?.coursesInProgress.length === 0 &&
-      dashboardCourses?.completedCourses.length === 0 ? (
-        <div >
-          <h2 className="text-xl font-normal py-4">Explore Courses</h2>
-          <CoursesList
-          items={[
-            ...(dashboardCourses?.additionalCourses ?? []),
-          ]}
-        />
+
+      {/* Section for User Courses */}
+      {(coursesInProgress.length > 0 || completedCourses.length > 0) && (
+        <div className="mt-4">
+          <h2 className="text-xl font-normal pb-2">Your Courses</h2>
+          <CoursesList items={[...coursesInProgress, ...completedCourses]} />
         </div>
-      ) : (
-        <CoursesList
-          items={[
-            ...(dashboardCourses?.coursesInProgress ?? []),
-            ...(dashboardCourses?.completedCourses ?? []),
-            ...(dashboardCourses?.additionalCourses ?? []),
-          ]}
-        />
       )}
+
+      {/* Section for Recommended/Suggested Courses */}
+      {additionalCourses.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-normal pb-2">Recommended Courses</h2>
+          <CoursesList items={additionalCourses} />
+        </div>
+      )}
+
+      {/* Display message if no purchased or recommended courses */}
+      {coursesInProgress.length === 0 &&
+        completedCourses.length === 0 &&
+        additionalCourses.length === 0 && (
+          <div className="text-center text-sm text-muted-foreground mt-10">
+            No courses found
+          </div>
+        )}
     </div>
   );
 };
