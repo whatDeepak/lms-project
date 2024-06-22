@@ -1,4 +1,3 @@
-// app/api/dashboardcourses/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { Course, Category, Chapter } from "@prisma/client";
@@ -13,6 +12,7 @@ type CourseWithProgress = Course & {
 type DashboardCourses = {
   completedCourses: CourseWithProgress[];
   coursesInProgress: CourseWithProgress[];
+  additionalCourses: CourseWithProgress[];
 };
 
 export async function GET(req: NextRequest) {
@@ -24,7 +24,26 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // Fetch purchased course IDs for the user
+    const purchasedCourses = await db.purchase.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        courseId: true,
+      },
+    });
+
+    // Extract courseIds from purchasedCourses
+    const purchasedCourseIds = purchasedCourses.map((purchase) => purchase.courseId);
+
+    // Fetch courses that the user has purchased
     const allCourses = await db.course.findMany({
+      where: {
+        id: {
+          in: purchasedCourseIds,
+        },
+      },
       include: {
         category: true,
         chapters: {
@@ -35,7 +54,8 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const courses: CourseWithProgress[] = await Promise.all(
+    // Prepare CourseWithProgress objects with progress information
+    const coursesWithProgress: CourseWithProgress[] = await Promise.all(
       allCourses.map(async (course) => {
         const courseWithProgress = course as CourseWithProgress;
         const progress = await getProgress(userId, course.id);
@@ -44,12 +64,46 @@ export async function GET(req: NextRequest) {
       })
     );
 
-    const completedCourses = courses.filter((course) => course.progress === 100);
-    const coursesInProgress = courses.filter((course) => (course.progress ?? 0) < 100);
+    // Filter completed and in-progress courses based on progress
+    const completedCourses = coursesWithProgress.filter((course) => course.progress === 100);
+    const coursesInProgress = coursesWithProgress.filter((course) => (course.progress ?? 0) < 100);
+
+    
+    const totalCourses = completedCourses.length + coursesInProgress.length;
+
+    // Fetch additional courses if needed to reach at least 6 courses
+    let additionalCourses: CourseWithProgress[] = [];
+    if (totalCourses < 6) {
+      const extraCoursesNeeded = 6 - totalCourses;
+      const additionalCourseEntities = await db.course.findMany({
+        where: {
+          id: {
+            notIn: purchasedCourseIds,
+          },
+          isPublished: true,
+        },
+        include: {
+          category: true,
+          chapters: {
+            where: {
+              isPublished: true,
+            },
+          },
+        },
+        take: extraCoursesNeeded,
+      });
+
+      additionalCourses = additionalCourseEntities.map((course) => {
+        const courseWithProgress = course as CourseWithProgress;
+        courseWithProgress.progress = null; 
+        return courseWithProgress;
+      });
+    }
 
     const dashboardCourses: DashboardCourses = {
       completedCourses,
       coursesInProgress,
+      additionalCourses,
     };
 
     return NextResponse.json(dashboardCourses, { status: 200 });
@@ -59,6 +113,7 @@ export async function GET(req: NextRequest) {
       error: 'Failed to fetch dashboard courses',
       completedCourses: [],
       coursesInProgress: [],
+      additionalCourses: [],
     }, { status: 500 });
   }
 }

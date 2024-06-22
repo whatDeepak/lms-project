@@ -16,9 +16,10 @@ export const NavbarRoutes = () => {
   const user = useCurrentUser();
   const pathname = usePathname();
 
-   const isTeacherPage = pathname?.startsWith("/teacher");
-   const isCoursePage = pathname?.includes("/courses");
-   const isSearchPage = pathname === "/browse";
+  const isTeacher = user?.role === "TEACHER";
+  const isTeacherPage = pathname?.startsWith("/teacher");
+  const isCoursePage = pathname?.includes("/courses");
+  const isSearchPage = pathname === "/browse";
   const firstName = user?.name?.split(' ')[0]; // Get the first name
   const formattedName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
 
@@ -50,14 +51,20 @@ export const NavbarRoutes = () => {
           <SearchInput />
         </div>
       )}
-         {(isTeacherPage || isCoursePage )&& (
-             <Link href={hrf}>
-             <Button size="sm" variant="outline">
-               <LogOut className="h-4 w-4 mr-2 text-lg" />
-                <p className="text-sm">Exit</p>
-             </Button>
-           </Link>
-        )}
+         {isTeacherPage || isCoursePage ? (
+          <Link href="/dashboard">
+            <Button size="sm" variant="ghost">
+              <LogOut className="h-4 w-4 mr-2" />
+              Exit
+            </Button>
+          </Link>
+        ) : isTeacher ? (
+          <Link href="/teacher/courses">
+            <Button size="sm" variant="outline">
+              Teacher mode
+            </Button>
+          </Link>
+        ) : null}
         <UserNav />
       </div>
     </>

@@ -70,7 +70,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   @@index([categoryId])
-   @@fulltext([title])
+  @@fulltext([title])
 }
 
 model Category {
@@ -101,7 +101,7 @@ model Chapter {
   videoUrl String?
   position Int
   isPublished Boolean @default(false)
-  isFree Boolean @default(false)
+  isFree Boolean @default(true)
 
   muxData MuxData?
 

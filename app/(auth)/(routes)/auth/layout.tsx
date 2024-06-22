@@ -77,7 +77,13 @@ const AuthLayout = ({
                           </div>
                           {/* Dynamic image and name */}
                           <div className="flex items-start mt-5">
-                            <Image src={review.imageUrl} alt={review.name} className="w-10 h-10 rounded-full mr-3" />
+                            <Image 
+                              src={review.imageUrl} 
+                              alt={review.name} 
+                              width={40} 
+                              height={40} 
+                              className="w-10 h-10 rounded-full mr-3" 
+                            />
                             <div>
                               <span className="text-white text-sm block">{review.name}</span>
                               <span className="text-white text-xs block">{review.job}</span>

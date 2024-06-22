@@ -24,8 +24,6 @@ export const UpdateDialog: React.FC<UpdateDialogProps> = ({ onClose, userId }) =
     const [rollno, setRollno] = useState("");
 
     const handleClose = async () => {
-        console.log(`User ID: ${userId}`);
-        console.log(`Roll Number: ${rollno}`);
     
         if (!userId) {
             console.error("User ID is not provided");

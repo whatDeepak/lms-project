@@ -9,6 +9,7 @@ import { CourseProgressButton } from "./_components/course-progress-button";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { VideoPlayer } from "./_components/video-player";
 import { getChapter } from "@/actions/Courses/get-chapter";
+import { checkPurchase } from "@/actions/Courses/get-purchase";
 
 
 const ChapterIdPage = async ({
@@ -29,6 +30,7 @@ const ChapterIdPage = async ({
     attachments,
     nextChapter,
     userProgress,
+    purchase,
   } = await getChapter({
     userId,
     chapterId: params.chapterId,
@@ -39,8 +41,8 @@ const ChapterIdPage = async ({
     return redirect("/")
   }
 
-
-  const isLocked = !chapter.isFree ;
+  const purchased = await checkPurchase(userId, params.courseId);
+  const isLocked = !purchased;
   const completeOnEnd =  !userProgress?.isCompleted;
 
   return ( 
@@ -77,15 +79,7 @@ const ChapterIdPage = async ({
             <h2 className="text-2xl font-semibold mb-2">
               {chapter.title}
             </h2>
-
-
-            <CourseProgressButton
-                chapterId={params.chapterId}
-                courseId={params.courseId}
-                nextChapterId={nextChapter?.id}
-                isCompleted={!!userProgress?.isCompleted}
-              />
-            {/* {purchase ? (
+            {purchase ? (
               <CourseProgressButton
                 chapterId={params.chapterId}
                 courseId={params.courseId}
@@ -96,10 +90,7 @@ const ChapterIdPage = async ({
               <CourseEnrollButton
                 courseId={params.courseId}
               />
-            )} */}
-
-
-
+            )}
           </div>
           <Separator />
           <div>
@@ -133,7 +124,7 @@ const ChapterIdPage = async ({
          <div className="flex flex-col">
              
            <h2 className="text-lg font-medium ml-4 pb-4">Attachments</h2>
-      {!!attachments.length && (
+            {!!attachments.length && (
             <>
                 {attachments.map((attachment) => (
                   <div key={attachment.id}>

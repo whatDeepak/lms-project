@@ -29,7 +29,6 @@ export const {
     async signIn({ account, profile }) {
       // Check if email is verified and ends with `@nitj.ac.in`
       if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
-        console.log("Different domain email");
         return false;
       }
       return true;
@@ -61,7 +60,6 @@ export const {
       // Fetch the existing user by ID
       const existingUser = await getUserById(token.sub);
       if (!existingUser) {
-        console.log("Existing user not found");
         return token;
       }
 
@@ -91,7 +89,6 @@ export const {
             data: { role: UserRole.TEACHER },
           });
 
-          console.log(`User role updated to TEACHER in the database for user ID: ${existingUser.id}`);
         }
       }
 
