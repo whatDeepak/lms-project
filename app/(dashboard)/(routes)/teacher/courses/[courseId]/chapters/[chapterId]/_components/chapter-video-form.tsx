@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import MuxPlayer from "@mux/mux-player-react";
 import { Pencil, PlusCircle, Video } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Chapter } from "@prisma/client";
@@ -12,7 +12,10 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
-import ReactPlayer from "react-player";
+
+import dynamic from "next/dynamic";
+const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+
 
 interface ChapterVideoFormProps {
   initialData: Chapter;
@@ -29,6 +32,12 @@ export const ChapterVideoForm = ({
   courseId,
   chapterId,
 }: ChapterVideoFormProps) => {
+  const [hasWindow, setHasWindow] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasWindow(true);
+    }
+  }, []);
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);

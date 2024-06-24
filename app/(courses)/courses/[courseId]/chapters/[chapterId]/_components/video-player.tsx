@@ -8,7 +8,10 @@ import { Loader2, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
-import ReactPlayer from "react-player";
+
+import dynamic from "next/dynamic";
+const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -30,9 +33,11 @@ export const VideoPlayer = ({
   title,
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [hasWindow, setHasWindow] = useState(false);
   useEffect(() => {
-    setIsMounted(true);
+    if (typeof window !== "undefined") {
+      setHasWindow(true);
+    }
   }, []);
   const router = useRouter();
   const confetti = useConfettiStore();
