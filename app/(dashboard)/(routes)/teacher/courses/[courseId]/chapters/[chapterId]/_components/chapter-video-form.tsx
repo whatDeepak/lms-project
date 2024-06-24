@@ -12,6 +12,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
+import ReactPlayer from "react-player";
 
 interface ChapterVideoFormProps {
   initialData: Chapter;
@@ -74,6 +75,14 @@ export const ChapterVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
+            {
+               <ReactPlayer
+               url={initialData.videoUrl}
+               controls
+               width="100%"
+               height="100%"
+             />
+            }
             {/* <MuxPlayer
               playbackId={initialData?.muxData?.playbackId || ""}
             /> */}
