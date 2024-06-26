@@ -2,10 +2,21 @@
 import { useEffect } from "react";
 import { Chart } from "chart.js";
 
-function DoughnutChart({ labels, data }) {
+// Define the props interface
+interface DoughnutChartProps {
+  labels: string[];
+  data: number[];
+}
+
+const DoughnutChart: React.FC<DoughnutChartProps> = ({ labels, data }) => {
   useEffect(() => {
-    var ctx = document.getElementById("myChart").getContext("2d");
-    var myChart = new Chart(ctx, {
+    const ctx = (document.getElementById("myChart") as HTMLCanvasElement).getContext("2d");
+
+    if (!ctx) {
+      return;
+    }
+
+    const myChart = new Chart(ctx, {
       type: "doughnut",
       data: {
         labels: labels,
@@ -18,7 +29,7 @@ function DoughnutChart({ labels, data }) {
               "rgb(255, 99, 132)",
             ],
             backgroundColor: [
-              "rgb(75, 192, 192 )",
+              "rgb(75, 192, 192)",
               "rgb(255, 205, 86)",
               "rgb(255, 99, 132)",
             ],
@@ -41,19 +52,19 @@ function DoughnutChart({ labels, data }) {
         },
       },
     });
+
     // Cleanup function to destroy the chart when the component unmounts
     return () => {
       myChart.destroy();
     };
   }, [labels, data]);
+
+ 
   return (
-    <>
-      {/* line chart */}
-      <div className="border border-gray-400 pt-0 rounded-xl   my-auto h-[300px]">
-        <canvas id="myChart" width="300px" height="300px"></canvas>
-      </div>
-    </>
+    <div className="border border-gray-400 pt-0 rounded-xl my-auto h-[300px]">
+      <canvas id="myChart" width="300px" height="300px"></canvas>
+    </div>
   );
-}
+};
 
 export default DoughnutChart;

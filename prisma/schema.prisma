@@ -103,8 +103,6 @@ model Chapter {
   isPublished Boolean @default(false)
   isFree Boolean @default(true)
 
-  muxData MuxData?
-
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
@@ -116,14 +114,6 @@ model Chapter {
   @@index([courseId])
 }
 
-model MuxData {
-  id String @id @default(cuid()) @map("_id")
-  assetId String
-  playbackId String?
-
-  chapterId String @unique
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-}
 
 model UserProgress {
   id String @id @default(cuid()) @map("_id")
@@ -131,6 +121,7 @@ model UserProgress {
 
   chapterId String
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  watchedPercentage Int     @default(0) // New field to store the percentage watched
 
   isCompleted Boolean @default(false)
 
