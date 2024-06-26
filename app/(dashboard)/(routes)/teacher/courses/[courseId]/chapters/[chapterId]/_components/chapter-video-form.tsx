@@ -94,9 +94,6 @@ export const ChapterVideoForm = ({
                height="100%"
              />
             }
-            {/* <MuxPlayer
-              playbackId={initialData?.muxData?.playbackId || ""}
-            /> */}
           </div>
         )
       )}

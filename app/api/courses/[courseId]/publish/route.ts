@@ -23,7 +23,6 @@ export async function PATCH(
       include: {
         chapters: {
           include: {
-            muxData: true,
           }
         }
       }
