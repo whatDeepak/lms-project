@@ -32,20 +32,21 @@ export const CardWrapper = ({
       <CardHeader>
         <Header label={headerLabel} type={type} />
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-2">
         {children}
       </CardContent>
-      {showSocial && (
+      {showSocial ? (
         <CardFooter>
           <Social type={type} />
         </CardFooter>
-      )}
-      {/* <CardFooter>
+      ): 
+      <CardFooter>
         <BackButton
           label={backButtonLabel}
           href={backButtonHref}
         />
-      </CardFooter> */}
+      </CardFooter>
+      }
     </Card>
   );
 };
