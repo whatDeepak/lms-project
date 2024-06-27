@@ -3,15 +3,14 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
-import { formatPrice } from "@/lib/format";
 import { CourseProgress } from "@/components/course-progress";
+import { Badge } from "./ui/badge";
 
 interface CourseCardProps {
   id: string;
   title: string;
   imageUrl: string;
   chaptersLength: number;
-  price: number;
   progress: number | null;
   category: string;
 };
@@ -21,7 +20,6 @@ export const CourseCard = ({
   title,
   imageUrl,
   chaptersLength,
-  price,
   progress,
   category
 }: CourseCardProps) => {
@@ -58,9 +56,11 @@ export const CourseCard = ({
               value={progress}
             />
           ) : (
-            <p className="text-md md:text-sm font-medium text-slate-700">
-              {formatPrice(price)}
-            </p>
+            <div>
+              <Badge variant="new">
+                Enroll in course
+              </Badge>
+            </div>
           )}
         </div>
       </div>

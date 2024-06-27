@@ -5,7 +5,9 @@
  */
 export const publicRoutes = [
   "/",
-  "/auth/new-verification"
+  "/auth/new-verification",
+  "/api/uploadthing", 
+  "/api/webhook"
 ];
 
 /**

@@ -8,27 +8,25 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"
-import { cn } from "@/lib/utils";
+import Image from "next/image"
 
 const reviews = [
   {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere purus ac arcu cursus, nec laoreet ipsum venenatis.',
-    imageUrl: '/user1.jpg',
+    imageUrl: '/image.png',
     name: 'John Doe',
     job: 'Professor',
   },
   {
     text: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.',
-    imageUrl: '/user2.jpg',
+    imageUrl: '/image.png',
     name: 'Jane Doe',
     job: 'Professor',
   },
   {
     text: 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.',
-    imageUrl: '/user3.jpg',
+    imageUrl: '/image.png',
     name: 'Alice Smith',
     job: 'Professor',
   }
@@ -76,7 +74,13 @@ const AuthLayout = ({
                           </div>
                           {/* Dynamic image and name */}
                           <div className="flex items-start mt-5">
-                            <img src={review.imageUrl} alt={review.name} className="w-10 h-10 rounded-full mr-3" />
+                            <Image 
+                              src={review.imageUrl} 
+                              alt={review.name} 
+                              width={40} 
+                              height={40} 
+                              className="w-10 h-10 rounded-full mr-3" 
+                            />
                             <div>
                               <span className="text-white text-sm block">{review.name}</span>
                               <span className="text-white text-xs block">{review.job}</span>

@@ -1,59 +1,52 @@
 "use client";
 
-import { Search } from "@/app/(dashboard)/(routes)/dashboard/components/search";
-import { UserNav } from "@/app/(dashboard)/(routes)/dashboard/components/user-nav";
+import { SearchInput } from "@/app/(dashboard)/_components/searchInput";
+import { UserNav } from "@/app/(dashboard)/_components/user-nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { usePathname } from "next/navigation";
 
-// import { UserButton, useAuth } from "@clerk/nextjs";
-// import { usePathname } from "next/navigation";
-// import { LogOut } from "lucide-react";
-// import Link from "next/link";
+import { LogOut } from "lucide-react";
+import Link from "next/link";
 
-// import { Button } from "@/components/ui/button";
-// import { isTeacher } from "@/lib/teacher";
+import { Button } from "@/components/ui/button";
 
-// import { SearchInput } from "./search-input";
 
 export const NavbarRoutes = () => {
-  // const { userId } = useAuth();
-  // const pathname = usePathname();
-
-  // const isTeacherPage = pathname?.startsWith("/teacher");
-  // const isCoursePage = pathname?.includes("/courses");
-  // const isSearchPage = pathname === "/search";
   const user = useCurrentUser();
+  const pathname = usePathname();
+
+  const isTeacher = user?.role === "TEACHER";
+  const isTeacherPage = pathname?.startsWith("/teacher");
+  const isCoursePage = pathname?.includes("/courses");
+  const isSearchPage = pathname === "/browse";
   const firstName = user?.name?.split(' ')[0]; // Get the first name
   const formattedName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
 
+  const hrf= isTeacherPage? "/teacher/courses": "/dashboard";
+
   return (
     <>
-      {/* {isSearchPage && (
+      <p className="text-lg md:text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
+      <div className="ml-auto flex items-center space-x-4">
+      {isSearchPage && (
         <div className="hidden md:block">
           <SearchInput />
         </div>
       )}
-      <div className="flex gap-x-2 ml-auto">
-        {isTeacherPage || isCoursePage ? (
-          <Link href="/">
+         {isTeacherPage || isCoursePage ? (
+          <Link href="/dashboard">
             <Button size="sm" variant="ghost">
               <LogOut className="h-4 w-4 mr-2" />
               Exit
             </Button>
           </Link>
-        ) : isTeacher(userId) ? (
+        ) : isTeacher ? (
           <Link href="/teacher/courses">
-            <Button size="sm" variant="ghost">
+            <Button size="sm" variant="outline">
               Teacher mode
             </Button>
           </Link>
         ) : null}
-        <UserButton
-          afterSignOutUrl="/"
-        />
-      </div> */}
-      <p className="text-2xl ">Welcome, <span className="text-custom-primary font-medium">{formattedName}</span></p>
-      <div className="ml-auto flex items-center space-x-4">
-        <Search />
         <UserNav />
       </div>
     </>
