@@ -8,28 +8,25 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"
-import { cn } from "@/lib/utils";
 import Image from "next/image"
 
 const reviews = [
   {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere purus ac arcu cursus, nec laoreet ipsum venenatis.',
-    imageUrl: '/user1.jpg',
+    imageUrl: '/image.png',
     name: 'John Doe',
     job: 'Professor',
   },
   {
     text: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.',
-    imageUrl: '/user2.jpg',
+    imageUrl: '/image.png',
     name: 'Jane Doe',
     job: 'Professor',
   },
   {
     text: 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.',
-    imageUrl: '/user3.jpg',
+    imageUrl: '/image.png',
     name: 'Alice Smith',
     job: 'Professor',
   }
