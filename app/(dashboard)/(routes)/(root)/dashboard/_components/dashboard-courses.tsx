@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Category, Chapter, Course } from "@prisma/client";
-import { db } from "@/lib/db";
-import { getProgress } from "@/actions/Courses/get-progress";
 import { InfoCard } from "./info-card";
 import { CoursesList } from "@/components/courses-list";
 import { CheckCircle, Clock } from "lucide-react";

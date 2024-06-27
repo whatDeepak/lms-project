@@ -1,8 +1,7 @@
 "use client";
 
 import axios from "axios";
-import MuxPlayer from "@mux/mux-player-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
@@ -10,8 +9,12 @@ import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 
+import dynamic from "next/dynamic";
+const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+
+
 interface VideoPlayerProps {
-  playbackId: string;
+  videoUrl: string;
   courseId: string;
   chapterId: string;
   nextChapterId?: string;
@@ -21,7 +24,7 @@ interface VideoPlayerProps {
 };
 
 export const VideoPlayer = ({
-  playbackId,
+  videoUrl,
   courseId,
   chapterId,
   nextChapterId,
@@ -30,6 +33,12 @@ export const VideoPlayer = ({
   title,
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
+  const [hasWindow, setHasWindow] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasWindow(true);
+    }
+  }, []);
   const router = useRouter();
   const confetti = useConfettiStore();
 
@@ -56,6 +65,18 @@ export const VideoPlayer = ({
     }
   }
 
+  const [playedPercentage, setPlayedPercentage] = useState<number>(0);
+
+  const handleProgress = (state: { playedSeconds: number; played: number }) => {
+    const { played } = state;
+    const percentagePlayed = Math.round(played * 100);
+    setPlayedPercentage(percentagePlayed);
+  };
+
+  const handleRightClick = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="relative aspect-video">
       {!isReady && !isLocked && (
@@ -72,17 +93,34 @@ export const VideoPlayer = ({
         </div>
       )}
       {!isLocked && (
-        <MuxPlayer
-          title={title}
-          className={cn(
-            !isReady && "hidden"
-          )}
-          onCanPlay={() => setIsReady(true)}
-          onEnded={onEnd}
-          autoPlay
-          playbackId={playbackId}
-        />
-      )}
+      //   <MuxPlayer
+      //     title={title}
+      //     className={cn(
+      //       !isReady && "hidden"
+      //     )}
+      //     onCanPlay={() => setIsReady(true)}
+      //     onEnded={onEnd}
+      //     autoPlay
+      //     playbackId={playbackId}
+      //   />
+      <ReactPlayer
+        url={videoUrl}
+        controls
+        width="100%"
+        height="100%"
+        onProgress={handleProgress}
+        onEnded={onEnd}
+        onCanPlay={() => setIsReady(true)}
+        onContextMenu={handleRightClick}
+        className="react-player"
+        config={{ file: { 
+          attributes: {
+            controlsList: 'nodownload'
+          }
+        }}}
+      />
+   
+       )}
     </div>
   )
 }

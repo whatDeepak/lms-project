@@ -5,8 +5,8 @@ import { Poppins } from "next/font/google";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { db } from "@/lib/db";
-import { CalendarDateRangePicker } from "../../../components/date-range-picker";
-import DoughnutChart from "../../../components/doughnutChart";
+import { CalendarDateRangePicker } from "../../../_components/date-range-picker";
+import DoughnutChart from "../../../_components/doughnutChart";
 import { redirect } from "next/navigation";
 import DashboardCoursesCard from "./_components/dashboard-courses";
 
@@ -21,10 +21,18 @@ enum UserRole {
   USER = "USER",
 }
 
+interface CategoryData {
+  category: string;
+  percentage: number;
+}
+
 const Dashboard = () => {
   const user = useCurrentUser();
   const [showDialog, setShowDialog] = useState(false);
-  const [data, setData] = useState<any>();
+  const [chartData, setChartData] = useState<{
+    labels: string[];
+    data: number[];
+  }>({ labels: [], data: [] });
   if (!user) {
     redirect("/");
   }
@@ -43,7 +51,27 @@ const Dashboard = () => {
     checkRollNo();
   }, [user]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `/api/analytics/doughnutData?userId=${user.id}`
+        );
+        const data = await response.json();
 
+        if (response.ok) {
+          console.log(data);
+          setChartData({ labels: data.labels, data: data.data });
+        } else {
+          console.error("Failed to fetch chart data:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    };
+
+    fetchData();
+  }, [user.id]);
 
   const handleCloseDialog = () => {
     // Close the Dialog
@@ -65,7 +93,13 @@ const Dashboard = () => {
           <div className="min-h-[326px]">
             <CalendarDateRangePicker />
           </div>
-          <DoughnutChart />
+          {chartData.data.length === 0 || chartData.labels.length === 0 ? (
+            <div className="border border-gray-400 pt-0 rounded-xl my-auto h-[300px] flex items-center justify-center">
+              <p>No data available</p>
+            </div>
+          ) : (
+            <DoughnutChart labels={chartData.labels} data={chartData.data} />
+          )}
         </div>
       </div>
     </>

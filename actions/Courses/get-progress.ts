@@ -1,9 +1,14 @@
 import { db } from "@/lib/db";
 
+type prograssProps = {
+  progressPercentage: number;
+  totalChapters: number;
+  completedChapters: number;
+};
 export const getProgress = async (
   userId: string,
-  courseId: string,
-): Promise<number> => {
+  courseId: string
+): Promise<prograssProps> => {
   try {
     const publishedChapters = await db.chapter.findMany({
       where: {
@@ -12,7 +17,7 @@ export const getProgress = async (
       },
       select: {
         id: true,
-      }
+      },
     });
 
     const publishedChapterIds = publishedChapters.map((chapter) => chapter.id);
@@ -24,14 +29,21 @@ export const getProgress = async (
           in: publishedChapterIds,
         },
         isCompleted: true,
-      }
+      },
     });
 
-    const progressPercentage = (validCompletedChapters / publishedChapterIds.length) * 100;
+    const progressPercentage =
+      (validCompletedChapters / publishedChapterIds.length) * 100;
+    const totalChapters = publishedChapterIds.length;
+    const completedChapters = validCompletedChapters;
 
-    return progressPercentage;
+    return { progressPercentage, totalChapters, completedChapters };
   } catch (error) {
     console.log("[GET_PROGRESS]", error);
-    return 0;
+    return {
+      progressPercentage: 0,
+    totalChapters: 0, 
+    completedChapters: 0
+    };
   }
-}
+};

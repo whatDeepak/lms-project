@@ -9,18 +9,23 @@ import {
 import { CourseSidebar } from "./course-sidebar";
 
 
+type progressProps = {
+  progressPercentage: number;
+  totalChapters: number;
+  completedChapters: number;
+};
 interface CourseMobileSidebarProps {
   course: Course & {
     chapters: (Chapter & {
       userProgress: UserProgress[] | null;
     })[];
   };
-  progressCount: number;
+  progress: progressProps;
 };
 
 export const CourseMobileSidebar = ({ 
   course,
-  progressCount,
+  progress,
 }: CourseMobileSidebarProps) => {
   return (
     <Sheet>
@@ -30,7 +35,7 @@ export const CourseMobileSidebar = ({
       <SheetContent side="left" className="p-0 bg-white w-72">
         <CourseSidebar
           course={course}
-          progressCount={progressCount}
+          progress={progress}
         />
       </SheetContent>
     </Sheet>
