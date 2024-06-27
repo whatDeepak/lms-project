@@ -29,7 +29,7 @@ export const {
     async signIn({ account, profile }) {
       // Check if email is verified and ends with `@nitj.ac.in`
       // if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
-        if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+        if (!profile?.email_verified ) {
         return false;
       }
       return true;
