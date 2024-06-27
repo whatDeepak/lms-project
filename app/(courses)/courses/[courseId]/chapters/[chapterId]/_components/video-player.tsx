@@ -73,6 +73,10 @@ export const VideoPlayer = ({
     setPlayedPercentage(percentagePlayed);
   };
 
+  const handleRightClick = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="relative aspect-video">
       {!isReady && !isLocked && (
@@ -107,7 +111,13 @@ export const VideoPlayer = ({
         onProgress={handleProgress}
         onEnded={onEnd}
         onCanPlay={() => setIsReady(true)}
+        onContextMenu={handleRightClick}
         className="react-player"
+        config={{ file: { 
+          attributes: {
+            controlsList: 'nodownload'
+          }
+        }}}
       />
    
        )}
