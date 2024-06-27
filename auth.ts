@@ -28,7 +28,8 @@ export const {
   callbacks: {
     async signIn({ account, profile }) {
       // Check if email is verified and ends with `@nitj.ac.in`
-      if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+      // if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+        if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
         return false;
       }
       return true;
@@ -80,7 +81,8 @@ export const {
         });
 
         // If the email is found in the teacher collection and the user's current role is not already "TEACHER"
-        if (teacher && existingUser.role !== UserRole.TEACHER) {
+        // if (teacher && existingUser.role !== UserRole.TEACHER) {
+        if (existingUser.role !== UserRole.TEACHER) {
           token.role = UserRole.TEACHER;
 
           // Update the user's role in the MongoDB database
@@ -88,8 +90,8 @@ export const {
             where: { id: existingUser.id },
             data: { role: UserRole.TEACHER },
           });
-
         }
+
       }
 
       return token;
