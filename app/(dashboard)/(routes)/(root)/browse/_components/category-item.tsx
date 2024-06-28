@@ -29,7 +29,7 @@ export const CategoryItem = ({
   const onClick = () => {
     const newQueryParams = {
       title: currentTitle,
-      categoryId: value === "all" ? undefined : value, // Remove categoryId if "All" is selected
+      categoryId: value === "all" ? undefined : (isSelected ? null : value), // Remove categoryId if "All" is selected
     };
 
     const url = qs.stringifyUrl({

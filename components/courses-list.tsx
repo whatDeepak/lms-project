@@ -1,6 +1,9 @@
+"use client"
 import { Category, Course } from "@prisma/client";
 
 import { CourseCard } from "@/components/course-card";
+import { useEffect, useState } from "react";
+import SkeletonLoader from "./skeleton-loader";
 
 type CourseWithProgressWithCategory = Course & {
   category: Category | null;
@@ -17,6 +20,17 @@ export const CoursesList = ({
 }
  : CoursesListProps
 ) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (items!==null) {
+      setLoading(false);
+    }
+  }, [items]);
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
   return (
     <>
       <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ">
