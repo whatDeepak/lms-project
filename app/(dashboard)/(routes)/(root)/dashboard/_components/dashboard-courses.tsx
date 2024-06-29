@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { Category, Chapter, Course } from "@prisma/client";
 import { InfoCard } from "./info-card";
-import { CoursesList } from "@/components/courses-list";
 import { CheckCircle, Clock } from "lucide-react";
 import SkeletonLoader from "./skeleton-loader";
+import { CoursesList } from "./course-list";
 
 type CourseWithProgress = Course & {
   category: Category;
