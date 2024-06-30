@@ -50,6 +50,7 @@ export const CourseCard = ({
 }: CourseCardProps) => {
   const [isAddingToWatchLater, setIsAddingToWatchLater] = useState(false); // State to track API call status
   const [isInWatchLater, setIsInWatchLater] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const link = `${process.env.NEXT_PUBLIC_APP_URL}/courses/${id}`;
 
   const handleCopy = () => {
@@ -62,19 +63,28 @@ export const CourseCard = ({
   };
 
   useEffect(() => {
-    // Check if course is in Watch Later when component mounts
+    const checkIfInWatchLater = async () => {
+      try {
+        const response = await axios.get(`/api/user/watch-later/${id}`);
+        setIsInWatchLater(response.data.inWatchLater);
+      } catch (error) {
+        console.error("Error checking Watch Later status:", error);
+      }
+    };
+
+    const checkIfFavorite = async () => {
+      try {
+        const response = await axios.get(`/api/user/favorite/${id}`);
+        setIsFavorite(response.data.isFavorite);
+      } catch (error) {
+        console.error("Error checking Favorite status:", error);
+      }
+    };
+
     checkIfInWatchLater();
+    checkIfFavorite();
   }, []);
 
-  const checkIfInWatchLater = async () => {
-    try {
-      // Make API request to check if course is in Watch Later
-      const response = await axios.get(`/api/user/watch-later/${id}`);
-      setIsInWatchLater(response.data.inWatchLater);
-    } catch (error) {
-      console.error("Error checking Watch Later status:", error);
-    }
-  };
   const toggleWatchLater = async () => {
     setIsAddingToWatchLater(true); // Set loading state
     try {
@@ -86,15 +96,36 @@ export const CourseCard = ({
         toast.success("Removed from Watch Later");
       } else {
         // Add to Watch Later
-        await axios.post("/api/user/watch-later", { courseId: id });
+        await axios.post(`/api/user/watch-later/${id}`);
         setIsInWatchLater(true);
         toast.success("Added to Watch Later");
       }
-    } catch (error) {
-      console.error("Error toggling Watch Later:", error);
-      toast.error("Failed to toggle Watch Later");
+    } catch (error: any) {
+      if (error.response && error.response.status === 409) {
+        toast.error("Already exists in Favorites");
+      } else toast.error("Failed to toggle Watch Later");
     } finally {
       setIsAddingToWatchLater(false); // Reset loading state
+    }
+  };
+
+  const toggleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        await axios.delete(`/api/user/favorite/${id}`);
+        setIsFavorite(false);
+        toast.success("Removed from Favorites");
+      } else {
+        await axios.post(`/api/user/favorite/${id}`);
+        setIsFavorite(true);
+        toast.success("Added to Favorites");
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 409) {
+        toast.error("Already exists in Favorites");
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   };
 
@@ -129,14 +160,14 @@ export const CourseCard = ({
                         Share
                       </button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[450px]">
+                    <DialogContent className=" sm:max-w-[450px] py-7 ">
                       <DialogHeader>
                         <DialogTitle>Share this course</DialogTitle>
                         <DialogDescription>
                           You can share this course with your friends.
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="flex w-full max-w-sm items-center space-x-2">
+                      <div className="flex w-full  items-center justify-between space-x-2">
                         <Input
                           value={link}
                           readOnly
@@ -164,15 +195,19 @@ export const CourseCard = ({
         </Link>
         <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
           <div className="flex justify-between w-full items-center">
-
-          <div className="flex items-center gap-x-1 text-slate-500">
-            <IconBadge size="sm" icon={BookOpen} />
-            <span>
-              {chaptersLength} {chaptersLength === 1 ? "Chapter" : "Chapters"}
-            </span>
-          </div>
-          <FaRegHeart className="text-custom-primary text-lg" />
-          <FaHeart className="text-custom-primary text-lg" />
+            <div className="flex items-center gap-x-1 text-slate-500">
+              <IconBadge size="sm" icon={BookOpen} />
+              <span>
+                {chaptersLength} {chaptersLength === 1 ? "Chapter" : "Chapters"}
+              </span>
+            </div>
+            <div onClick={toggleFavorite} className="cursor-pointer">
+              {isFavorite ? (
+                <FaHeart className="text-custom-primary text-lg" />
+              ) : (
+                <FaRegHeart className="text-custom-primary text-lg" />
+              )}
+            </div>
           </div>
         </div>
         {progress !== null ? (
