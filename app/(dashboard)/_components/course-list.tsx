@@ -2,8 +2,8 @@
 import { Category, Course } from "@prisma/client";
 
 import { CourseCard } from "@/components/course-card";
-import { useEffect, useState } from "react";
-import SkeletonLoader from "./skeleton-loader";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type CourseWithProgressWithCategory = Course & {
   category: Category | null;
@@ -20,10 +20,15 @@ export const CoursesList = ({
 }
  : CoursesListProps
 ) => {
- 
+    const path= usePathname();
+    const isCollectionPage=path.includes("collection");
   return (
     <>
-      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ">
+      <div 
+      className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ",
+        isCollectionPage && "md:grid-cols-3 lg:grid-cols-4"
+      )}
+      >
         {items.map((item) => (
           <CourseCard
             key={item.id}

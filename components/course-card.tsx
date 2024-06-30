@@ -48,7 +48,7 @@ export const CourseCard = ({
   progress,
   category,
 }: CourseCardProps) => {
-  const [isAddingToWatchLater, setIsAddingToWatchLater] = useState(false); // State to track API call status
+  // const [isAddingToWatchLater, setIsAddingToWatchLater] = useState(false); // State to track API call status
   const [isInWatchLater, setIsInWatchLater] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const link = `${process.env.NEXT_PUBLIC_APP_URL}/courses/${id}`;
@@ -86,7 +86,7 @@ export const CourseCard = ({
   }, []);
 
   const toggleWatchLater = async () => {
-    setIsAddingToWatchLater(true); // Set loading state
+    //setIsAddingToWatchLater(true);
     try {
       // Toggle Watch Later status based on current state
       if (isInWatchLater) {
@@ -105,7 +105,7 @@ export const CourseCard = ({
         toast.error("Already exists in Favorites");
       } else toast.error("Failed to toggle Watch Later");
     } finally {
-      setIsAddingToWatchLater(false); // Reset loading state
+      //setIsAddingToWatchLater(false); // Reset loading state
     }
   };
 
@@ -130,7 +130,7 @@ export const CourseCard = ({
   };
 
   return (
-    <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full relative">
+    <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full relative  md:max-w-[300px]">
       <div className="relative w-full aspect-video rounded-md overflow-hidden">
         <Image fill className="object-cover" alt={title} src={imageUrl} />
         <div className="absolute top-2 right-2">
@@ -217,9 +217,11 @@ export const CourseCard = ({
             value={progress}
           />
         ) : (
+          <Link href={`/courses/${id}`}>
           <div>
             <Badge variant="new">Enroll in course</Badge>
           </div>
+          </Link>
         )}
       </div>
     </div>

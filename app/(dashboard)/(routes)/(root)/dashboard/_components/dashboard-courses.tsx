@@ -5,7 +5,7 @@ import { Category, Chapter, Course } from "@prisma/client";
 import { InfoCard } from "./info-card";
 import { CheckCircle, Clock } from "lucide-react";
 import SkeletonLoader from "./skeleton-loader";
-import { CoursesList } from "./course-list";
+import { CoursesList } from "../../../../_components/course-list";
 
 type CourseWithProgress = Course & {
   category: Category;
