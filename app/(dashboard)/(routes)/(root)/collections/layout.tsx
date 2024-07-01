@@ -8,7 +8,7 @@ const CollectionsLayout = ({
   return ( 
      
     <>
-     <div className="w-full flex items-center justify-between px-6 bg-custom-primary h-24 sm:h-32">
+     <div className="w-full flex items-center justify-between px-6 bg-custom-primary h-16 sm:h-24">
         <Topbar />
       </div>
       <main className="p-6 space-y-4">
