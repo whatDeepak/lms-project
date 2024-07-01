@@ -2,8 +2,6 @@
 import { Category, Course } from "@prisma/client";
 
 import { CourseCard } from "@/components/course-card";
-import { useEffect, useState } from "react";
-import SkeletonLoader from "./skeleton-loader";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -22,22 +20,15 @@ export const CoursesList = ({
 }
  : CoursesListProps
 ) => {
-  const [loading, setLoading] = useState(true);
-  const path= usePathname();
-  useEffect(() => {
-    if (items!==null) {
-      setLoading(false);
-    }
-  }, [items]);
-  const isBrowsePage=path.includes("browse");
-  if (loading) {
-    return <SkeletonLoader />;
-  }
+    const path= usePathname();
+    const isCollectionPage=path.includes("collection");
   return (
     <>
-      <div  className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ",
-        isBrowsePage && "md:grid-cols-3 lg:grid-cols-4"
-      )}>
+      <div 
+      className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4 ",
+        isCollectionPage && "md:grid-cols-3 lg:grid-cols-4"
+      )}
+      >
         {items.map((item) => (
           <CourseCard
             key={item.id}
