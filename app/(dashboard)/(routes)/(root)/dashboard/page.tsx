@@ -5,10 +5,13 @@ import { Poppins } from "next/font/google";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { db } from "@/lib/db";
-import { CalendarDateRangePicker } from "../../../_components/date-range-picker";
+import  CalendarDateRangePicker  from "../../../_components/date-range-picker";
 import DoughnutChart from "../../../_components/doughnutChart";
 import { redirect } from "next/navigation";
 import DashboardCoursesCard from "./_components/dashboard-courses";
+import { trackUserActivity } from "@/lib/trackUserActivity";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -60,7 +63,6 @@ const Dashboard = () => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log(data);
           setChartData({ labels: data.labels, data: data.data });
         } else {
           console.error("Failed to fetch chart data:", data.error);
@@ -69,8 +71,19 @@ const Dashboard = () => {
         console.error("Error fetching chart data:", error);
       }
     };
+    const dailyCheckIn=async () => {
+      try {
+           const response= await axios.post(`/api/user/trackUserActivity`);
+          if(response.data.message==="First time"){
+            toast.success("Daily Check-in")
+          }
+      } catch (error) {
+          console.error("Error tracking daily check-In progress:", error);
+      }
+    }
 
     fetchData();
+    dailyCheckIn();
   }, [user.id]);
 
   const handleCloseDialog = () => {

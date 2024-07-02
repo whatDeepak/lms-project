@@ -7,6 +7,7 @@ import { CoursesList } from "@/components/courses-list";
 import { Categories } from "./_components/categories";
 import { currentUser } from "@/lib/auth";
 import { SearchInput } from "@/app/(dashboard)/components/searchInput";
+import { trackUserActivity } from "@/lib/trackUserActivity";
 
 interface SearchPageProps {
   searchParams: {
@@ -25,7 +26,7 @@ const BrowsePage = async ({
 if (!userId) {
   return redirect("/");
 }
-
+const dailyCheckIn= await trackUserActivity(userId);
 
   const categories = await db.category.findMany({
     orderBy: {

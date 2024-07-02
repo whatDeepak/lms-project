@@ -4,6 +4,12 @@
 .landing-section{
   @apply  px-[30px] lg:px-[60px]   md:px-[45px] 
 }
+.calendar-dates {
+  background-color: #9C88FB;
+  color: white; /* Optional: Adjust text color for better visibility */
+  border-radius: 4px; /* Optional: Rounded corners */
+  /* Add any additional styling as needed */
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
