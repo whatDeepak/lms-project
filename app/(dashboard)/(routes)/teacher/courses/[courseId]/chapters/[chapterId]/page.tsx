@@ -30,7 +30,9 @@ const ChapterIdPage = async ({
       id: params.chapterId,
       courseId: params.courseId
     },
-
+    include: {
+      quizzes: true
+    }
   });
 
   if (!chapter) {
