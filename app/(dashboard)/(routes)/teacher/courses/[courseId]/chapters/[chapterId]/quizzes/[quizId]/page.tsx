@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Pencil, PlusCircle } from "lucide-react";
+import { ArrowLeft, CircleHelp, LayoutDashboard } from "lucide-react";
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
 import { Banner } from "@/components/banner";
 
 import { QuizTitleForm } from "./_components/quiz-title-form";
+import { QuizTimelineForm } from "./_components/quiz-timeline-form";
 import { QuizQuestionsForm } from "./_components/quiz-question-form";
-//import { QuizActions } from "./_components/quiz-actions";
 import { currentUser } from "@/lib/auth";
 
 const QuizIdPage = async ({
@@ -25,7 +25,7 @@ const QuizIdPage = async ({
 
   const quiz = await db.quiz.findUnique({
     where: {
-      id: params.quizId, // Ensure quizId is properly received and used here
+      id: params.quizId,
     },
     include: {
       questions: true,
@@ -38,8 +38,8 @@ const QuizIdPage = async ({
 
   const requiredFields = [
     quiz.title,
-    quiz.description,
-    // Add any other required fields here
+    quiz.timeline,
+    quiz.questions.length > 0
   ];
 
   const totalFields = requiredFields.length;
@@ -76,13 +76,6 @@ const QuizIdPage = async ({
                   Complete all fields {completionText}
                 </span>
               </div>
-              {/* <QuizActions
-                disabled={!isComplete}
-                courseId={params.courseId}
-                chapterId={params.chapterId}
-                quizId={params.quizId}
-                isPublished={quiz.isPublished}
-              /> */}
             </div>
           </div>
         </div>
@@ -90,7 +83,7 @@ const QuizIdPage = async ({
           <div className="space-y-4">
             <div>
               <div className="flex items-center gap-x-2">
-                <IconBadge icon={Pencil} />
+                <IconBadge icon={LayoutDashboard} />
                 <h2 className="text-xl">
                   Customize your quiz
                 </h2>
@@ -101,16 +94,30 @@ const QuizIdPage = async ({
                 chapterId={params.chapterId}
                 quizId={params.quizId}
               />
-              <QuizQuestionsForm
-                initialData={quiz.questions}
+              <QuizTimelineForm
+                initialData={quiz}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 quizId={params.quizId}
               />
             </div>
           </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={CircleHelp} />
+              <h2 className="text-xl">
+                Add Questions
+              </h2>
+            </div>
+            <QuizQuestionsForm
+              initialData={quiz.questions}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+              quizId={params.quizId}
+            />
+          </div>
         </div>
-      </div >
+      </div>
     </>
   );
 }
