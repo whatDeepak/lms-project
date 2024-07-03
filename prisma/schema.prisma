@@ -137,8 +137,8 @@ model Question {
   id       String   @id @default(cuid()) @map("_id")
   text     String
   type     QuestionType
-  options  String[] // Stores options as an array
-  answers  String[] // Stores correct answers as an array for MCQ
+  options  String[] @default([])  // Stores options as an array
+  answers  String[] @default([])  // Stores correct answers as an array for MCQ
 
   quizId String
   quiz   Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)

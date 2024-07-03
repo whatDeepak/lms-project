@@ -58,7 +58,7 @@ export async function PATCH(
   try {
     const user = await currentUser();
     let userId = user?.id ?? "";
-    const { title, timeline } = await req.json();
+    const values = await req.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -81,11 +81,10 @@ export async function PATCH(
         chapterId: params.chapterId,
       },
       data: {
-        title,
-        timeline,
+        ...values,
       },
     });
-
+    console.log(params.quizId)
     return NextResponse.json(quiz);
   } catch (error) {
     console.log("[QUIZ_UPDATE]", error);
