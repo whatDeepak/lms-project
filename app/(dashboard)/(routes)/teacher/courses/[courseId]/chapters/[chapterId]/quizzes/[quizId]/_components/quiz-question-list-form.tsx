@@ -36,17 +36,11 @@ export const ChapterQuestionsList = ({
         <div
           key={question.id}
           className={cn(
-            "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
+            "flex items-center p-2 gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
             
           )}
         >
           {question.text}
-          <div className="ml-auto pr-2 flex items-center gap-x-2">
-            <Pencil
-              onClick={() => onEdit(question.id)}
-              className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
-            />
-          </div>
         </div>
       ))}
     </div>
