@@ -1,3 +1,5 @@
+// api/quiz/questions/[quizId].ts
+
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
@@ -42,28 +44,38 @@ export async function PATCH(
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    // Prepare the updated questions array
-    const updatedQuestions = questions.map((question: any) => {
-      // Ensure options array exists and is empty for normal type questions
-      if (question.type === "NORMAL") {
-        return {
-          ...question,
-          options: [], // Set options to an empty array for normal questions
-        };
+    // Map over questions and update them individually
+    const updatedQuestions = await Promise.all(questions.map(async (question: any) => {
+      // Find the existing question or create a new one if it doesn't exist
+      const existingQuestion = existingQuiz.questions.find(q => q.id === question.id);
+      if (!existingQuestion) {
+        return db.question.create({
+          data: {
+            ...question,
+            quizId: params.quizId,
+          }
+        });
       }
-      return question; // Return as-is for MCQ questions
-    });
 
-    // Update only the questions array, keeping other quiz data unchanged
-    const updatedQuiz = await db.quiz.update({
+      // Update the existing question
+      return db.question.update({
+        where: { id: question.id },
+        data: {
+          text: question.text,
+          type: question.type,
+          option1: question.option1,
+          option2: question.option2,
+          option3: question.option3,
+          option4: question.option4,
+          answer: question.answer,
+        }
+      });
+    }));
+
+    // Return the updated quiz with questions
+    const updatedQuiz = await db.quiz.findUnique({
       where: {
         id: params.quizId,
-      },
-      data: {
-        questions: {
-          // Use 'set' to replace existing questions with new ones
-          set: [...existingQuiz.questions, ...updatedQuestions], // Append new questions to existing ones
-        },
       },
       include: {
         questions: true,
