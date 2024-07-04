@@ -36,6 +36,9 @@ const Dashboard = () => {
     labels: string[];
     data: number[];
   }>({ labels: [], data: [] });
+  const [checkInShown, setCheckInShown] = useState(false);
+  const [checkInDates, setCheckInDates] = React.useState<string[]>([]);
+
   if (!user) {
     redirect("/");
   }
@@ -72,20 +75,24 @@ const Dashboard = () => {
       }
     };
     const dailyCheckIn=async () => {
+     
       try {
            const response= await axios.post(`/api/user/trackUserActivity`);
-          if(response.data.message==="First time"){
-            toast.success("Daily Check-in")
+           setCheckInDates(response.data.checkInDates);
+          if(response.data.message==="First time" && !checkInShown){
+         toast.success("Daily Check-in");
+            setCheckInShown(true);
           }
       } catch (error) {
           console.error("Error tracking daily check-In progress:", error);
       }
+   
     }
 
     fetchData();
-    dailyCheckIn();
-  }, [user.id]);
-
+   dailyCheckIn();
+  }, [user.id,checkInShown]);
+  
   const handleCloseDialog = () => {
     // Close the Dialog
     setShowDialog(false);
@@ -104,7 +111,7 @@ const Dashboard = () => {
 
         <div className=" hidden md:block fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
           <div className="min-h-[326px]">
-            <CalendarDateRangePicker />
+            <CalendarDateRangePicker checkInDates={checkInDates} />
           </div>
           {chartData.data.length === 0 || chartData.labels.length === 0 ? (
             <div className="border border-gray-400 pt-0 rounded-xl my-auto h-[300px] flex items-center justify-center">

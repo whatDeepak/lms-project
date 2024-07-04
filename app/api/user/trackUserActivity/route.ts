@@ -31,7 +31,7 @@ export async function POST(
         return storedDateOnly.getTime() === currentDateOnly.getTime(); // Compare date parts only
       });
       
-  
+      let updatedCheckInDates = currUser.checkInDates;
       if (!isDateAlreadyCheckedIn) {
         // Update the checkInDates array with the new date
         const updatedUser = await db.user.update({
@@ -40,11 +40,25 @@ export async function POST(
             checkInDates: [...currUser.checkInDates, currentDate], // Add the current date and time
           },
         });
-    
-        // Show a toast or notification that today is the first time user entered
-        return new NextResponse(JSON.stringify({ success: true, message: "First time" }), { status: 200 });
+        updatedCheckInDates = updatedUser.checkInDates;
+       // return new NextResponse(JSON.stringify({ success: true, message: "First time" }), { status: 200 });
       } 
-      return new NextResponse(JSON.stringify({ success: true, message: "NotFirstTime" }), { status: 200 });
+  
+         // Format dates to 'YYYY-MM-DD' format
+    const formattedDates = updatedCheckInDates.map(date =>
+      `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+    );
+
+    const message = isDateAlreadyCheckedIn ? "NotFirstTime" : "First time";
+
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        message,
+        checkInDates: formattedDates,
+      }),
+      { status: 200 }
+    );
   
     } catch (error) {
       console.log("[Daly_Check_Progress_Error: ]]", error);

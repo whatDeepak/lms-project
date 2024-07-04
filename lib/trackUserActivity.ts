@@ -1,5 +1,4 @@
 import { db } from '@/lib/db';
-import toast from 'react-hot-toast';
 
 export const trackUserActivity = async (userId: string) => {
   try {

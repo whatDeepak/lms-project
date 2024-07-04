@@ -1,24 +1,21 @@
 "use client";
 import * as React from "react";
-import { format, isSameDay } from "date-fns";
-import { DayPicker } from "react-day-picker";
+import {  parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 
-const CalendarDateRangePicker = () => {
-  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]);
+interface CalendarDateRangePickerProps{
+  checkInDates: string[]
+}
+const CalendarDateRangePicker = ({
+  checkInDates
+}:CalendarDateRangePickerProps ) => {
   
-  const Dates: Date[] = [
-    new Date('2024-07-02'),
-    new Date('2024-07-18'),
-    new Date('2024-07-20'),
-  ];
-
-
+  const parsedDates = checkInDates.map((dateString) => parseISO(dateString));
   return (
     <Calendar
     mode="single"
     className="rounded-md border"
-    modifiers={{selected: Dates}}
+    modifiers={{selected: parsedDates}}
     modifiersClassNames={{ selected: "calendar-dates" }}
   />
   );
