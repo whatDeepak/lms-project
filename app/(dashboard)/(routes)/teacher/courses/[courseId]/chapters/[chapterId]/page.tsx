@@ -42,6 +42,7 @@ const ChapterIdPage = async ({
   const requiredFields = [
     chapter.title,
     chapter.description,
+    chapter.quizzes,
     chapter.videoUrl,
   ];
 

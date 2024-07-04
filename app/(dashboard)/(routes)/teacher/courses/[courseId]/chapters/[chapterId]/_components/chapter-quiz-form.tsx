@@ -1,5 +1,5 @@
+// components/ChapterQuizForm.tsx
 "use client"
-
 import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,11 +68,6 @@ export const ChapterQuizForm = ({
       const newQuiz = response.data;
       toast.success("Quiz created");
       toggleCreating();
-
-      // Fetch updated data after creation
-      // Example: Refetch initial data to include the new quiz
-      // const updatedData = await fetchUpdatedData();
-      // setInitialData(updatedData);
 
       router.refresh(); // Refresh the page or relevant data after creation
     } catch (error) {

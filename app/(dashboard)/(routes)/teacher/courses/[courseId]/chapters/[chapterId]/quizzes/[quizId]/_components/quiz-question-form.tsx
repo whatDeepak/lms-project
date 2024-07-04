@@ -1,4 +1,4 @@
-// QuizQuestionsForm.tsx
+// components/QuizQuestionsForm.tsx
 
 "use client";
 
@@ -41,8 +41,11 @@ const formSchema = z.object({
         z.object({
             text: z.string().min(1),
             type: z.nativeEnum(QuestionType),
-            options: z.array(z.string()).optional(),
-            answers: z.array(z.string()).optional(),
+            option1: z.string().optional(),
+            option2: z.string().optional(),
+            option3: z.string().optional(),
+            option4: z.string().optional(),
+            answer: z.string().optional(),
         })
     ),
 });
@@ -87,6 +90,7 @@ export const QuizQuestionsForm = ({
                 values
             );
             toast.success("Quiz questions updated");
+            toggleEditing();
             router.refresh();
         } catch {
             toast.error("Something went wrong");
@@ -174,51 +178,73 @@ export const QuizQuestionsForm = ({
                                     <>
                                         <FormField
                                             control={form.control}
-                                            name={`questions.${index}.options`}
+                                            name={`questions.${index}.option1`}
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <div className="space-y-2">
-                                                            {[...Array(4)].map((_, optIndex) => (
-                                                                <Input
-                                                                    key={optIndex}
-                                                                    placeholder={`Option ${
-                                                                        optIndex + 1
-                                                                    }`}
-                                                                    value={
-                                                                        field.value?.[optIndex] ?? ""
-                                                                    }
-                                                                    onChange={(e) => {
-                                                                        const newOptions = field.value
-                                                                            ? [...field.value]
-                                                                            : [];
-                                                                        newOptions[optIndex] =
-                                                                            e.target.value;
-                                                                        field.onChange(
-                                                                            newOptions
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            ))}
-                                                        </div>
+                                                        <Input
+                                                            placeholder="Option 1"
+                                                            {...field}
+                                                        />
                                                     </FormControl>
-
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                         <FormField
                                             control={form.control}
-                                            name={`questions.${index}.answers`}
+                                            name={`questions.${index}.option2`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="Option 2"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`questions.${index}.option3`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="Option 3"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`questions.${index}.option4`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="Option 4"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`questions.${index}.answer`}
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
                                                         <Input
                                                             placeholder="Correct answer"
-                                                            value={field.value?.[0] ?? ""}
-                                                            onChange={(e) =>
-                                                                field.onChange([e.target.value])
-                                                            }
+                                                            {...field}
                                                         />
                                                     </FormControl>
                                                     <FormMessage />
@@ -230,16 +256,13 @@ export const QuizQuestionsForm = ({
                                 {form.watch(`questions.${index}.type`) === QuestionType.NORMAL && (
                                     <FormField
                                         control={form.control}
-                                        name={`questions.${index}.answers`}
+                                        name={`questions.${index}.answer`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
                                                     <Input
                                                         placeholder="Correct answer"
-                                                        value={field.value?.[0] ?? ""}
-                                                        onChange={(e) =>
-                                                            field.onChange([e.target.value])
-                                                        }
+                                                        {...field}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -260,7 +283,7 @@ export const QuizQuestionsForm = ({
                             <Button disabled={!isValid || isSubmitting} type="submit">
                                 Save
                             </Button>
-                            <Button variant="ghost" onClick={() => append({ text: "", type: QuestionType.NORMAL, options: [], answers: [] })}>
+                            <Button variant="ghost" onClick={() => append({ text: "", type: QuestionType.NORMAL, option1: "", option2: "", option3: "", option4: "", answer: "" })}>
                                 Add a question
                             </Button>
                         </div>
