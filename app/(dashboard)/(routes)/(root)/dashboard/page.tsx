@@ -5,10 +5,13 @@ import { Poppins } from "next/font/google";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UpdateDialog } from "@/components/dashboard/update-dialog";
 import { db } from "@/lib/db";
-import { CalendarDateRangePicker } from "../../../_components/date-range-picker";
+import  CalendarDateRangePicker  from "../../../_components/date-range-picker";
 import DoughnutChart from "../../../_components/doughnutChart";
 import { redirect } from "next/navigation";
 import DashboardCoursesCard from "./_components/dashboard-courses";
+import { trackUserActivity } from "@/lib/trackUserActivity";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -33,6 +36,9 @@ const Dashboard = () => {
     labels: string[];
     data: number[];
   }>({ labels: [], data: [] });
+  const [checkInShown, setCheckInShown] = useState(false);
+  const [checkInDates, setCheckInDates] = React.useState<string[]>([]);
+
   if (!user) {
     redirect("/");
   }
@@ -60,7 +66,6 @@ const Dashboard = () => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log(data);
           setChartData({ labels: data.labels, data: data.data });
         } else {
           console.error("Failed to fetch chart data:", data.error);
@@ -69,10 +74,25 @@ const Dashboard = () => {
         console.error("Error fetching chart data:", error);
       }
     };
+    const dailyCheckIn=async () => {
+     
+      try {
+           const response= await axios.post(`/api/user/trackUserActivity`);
+           setCheckInDates(response.data.checkInDates);
+          if(response.data.message==="First time" && !checkInShown){
+         toast.success("Daily Check-in");
+            setCheckInShown(true);
+          }
+      } catch (error) {
+          console.error("Error tracking daily check-In progress:", error);
+      }
+   
+    }
 
     fetchData();
-  }, [user.id]);
-
+   dailyCheckIn();
+  }, [user.id,checkInShown]);
+  
   const handleCloseDialog = () => {
     // Close the Dialog
     setShowDialog(false);
@@ -91,7 +111,7 @@ const Dashboard = () => {
 
         <div className=" hidden md:block fixed right-0 top-[80px] bottom-0 w-64 p-4 space-y-4 md:w-72 bg-white shadow-lg">
           <div className="min-h-[326px]">
-            <CalendarDateRangePicker />
+            <CalendarDateRangePicker checkInDates={checkInDates} />
           </div>
           {chartData.data.length === 0 || chartData.labels.length === 0 ? (
             <div className="border border-gray-400 pt-0 rounded-xl my-auto h-[300px] flex items-center justify-center">
