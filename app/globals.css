@@ -8,11 +8,13 @@
   background-color: #9C88FB;
   color: white; /* Optional: Adjust text color for better visibility */
   border-radius: 4px; /* Optional: Rounded corners */
+  margin: 2px;
   
 }
 .calendar-dates:hover {
   background-color: #9C88FB !important; /* Ensure it stays the same as normal state */
   color: white !important;
+  margin: 2px;
 }
 @tailwind base;
 @tailwind components;
