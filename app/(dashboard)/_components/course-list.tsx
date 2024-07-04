@@ -25,8 +25,8 @@ export const CoursesList = ({
   return (
     <>
       <div 
-      className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-4 ",
-        isCollectionPage && "md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
+      className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 ",
+        isCollectionPage && "md:grid-cols-3 lg:grid-cols-4"
       )}
       >
         {items.map((item) => (

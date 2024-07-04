@@ -90,6 +90,7 @@ export const QuizQuestionsForm = ({
                 values
             );
             toast.success("Quiz questions updated");
+            toggleEditing();
             router.refresh();
         } catch {
             toast.error("Something went wrong");
