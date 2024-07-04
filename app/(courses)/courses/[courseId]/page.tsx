@@ -1,4 +1,6 @@
+import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { trackUserActivity } from "@/lib/trackUserActivity";
 import { redirect } from "next/navigation";
 
 const CourseIdPage = async ({
@@ -6,6 +8,12 @@ const CourseIdPage = async ({
 }: {
   params: { courseId: string; }
 }) => {
+  const user= await currentUser();
+  if(!user?.id)redirect("/");
+
+  
+  const dailyCheckIn= await trackUserActivity(user?.id);
+
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
@@ -20,7 +28,7 @@ const CourseIdPage = async ({
         }
       }
     }
-  });``
+  });
      
   if (!course) {
     return redirect("/");

@@ -102,7 +102,7 @@ export const CourseCard = ({
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
-        toast.error("Already exists in Favorites");
+        toast.error("Already exists in watch-later");
       } else toast.error("Failed to toggle Watch Later");
     } finally {
       //setIsAddingToWatchLater(false); // Reset loading state

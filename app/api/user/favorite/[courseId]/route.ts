@@ -17,7 +17,7 @@ export async function POST(
 
       const { courseId } = params;
        // Check if the entry already exists
-       const existingEntry = await db.watchLater.findUnique({
+       const existingEntry = await db.favoriteCourse.findUnique({
         where: {
           userId_courseId: {
             userId,
@@ -27,6 +27,7 @@ export async function POST(
       });
   
       if (existingEntry) {
+        console.log(existingEntry);
         return new NextResponse("Already exists in Favorites", { status: 409 });
       }
   
