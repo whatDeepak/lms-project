@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
 
 
@@ -80,9 +81,12 @@ export const VideoPlayer = ({
   return (
     <div className="relative aspect-video">
       {!isReady && !isLocked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-          <Loader2 className="h-8 w-8 animate-spin text-secondary" />
-        </div>
+        <>
+
+          <Skeleton className="absolute inset-0 flex items-center justify-center" />
+            <Loader2 className="h-8 w-8 animate-spin absolute text-secondary top-[46%] left-[46%] text-gray-800" />
+          
+        </>
       )}
       {isLocked && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-secondary">
@@ -93,16 +97,6 @@ export const VideoPlayer = ({
         </div>
       )}
       {!isLocked && (
-      //   <MuxPlayer
-      //     title={title}
-      //     className={cn(
-      //       !isReady && "hidden"
-      //     )}
-      //     onCanPlay={() => setIsReady(true)}
-      //     onEnded={onEnd}
-      //     autoPlay
-      //     playbackId={playbackId}
-      //   />
       <ReactPlayer
         url={videoUrl}
         controls

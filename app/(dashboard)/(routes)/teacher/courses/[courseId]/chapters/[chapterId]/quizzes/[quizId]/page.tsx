@@ -1,22 +1,20 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Eye, LayoutDashboard, PlusCircle, Video } from "lucide-react";
+import { ArrowLeft, CircleHelp, LayoutDashboard } from "lucide-react";
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
 import { Banner } from "@/components/banner";
 
-import { ChapterTitleForm } from "./_components/chapter-title-form";
-import { ChapterDescriptionForm } from "./_components/chapter-description-form";
-import { ChapterVideoForm } from "./_components/chapter-video-form";
-import { ChapterQuizForm } from "./_components/chapter-quiz-form";
-import { ChapterActions } from "./_components/chapter-actions";
+import { QuizTitleForm } from "./_components/quiz-title-form";
+import { QuizTimelineForm } from "./_components/quiz-timeline-form";
+import { QuizQuestionsForm } from "./_components/quiz-question-form";
 import { currentUser } from "@/lib/auth";
 
-const ChapterIdPage = async ({
+const QuizIdPage = async ({
   params
 }: {
-  params: { courseId: string; chapterId: string }
+  params: { courseId: string; chapterId: string; quizId: string }
 }) => {
   const user = await currentUser();
   let userId = user?.id ?? "";
@@ -25,24 +23,23 @@ const ChapterIdPage = async ({
     return redirect("/");
   }
 
-  const chapter = await db.chapter.findUnique({
+  const quiz = await db.quiz.findUnique({
     where: {
-      id: params.chapterId,
-      courseId: params.courseId
+      id: params.quizId,
     },
     include: {
-      quizzes: true
-    }
+      questions: true,
+    },
   });
 
-  if (!chapter) {
+  if (!quiz) {
     return redirect("/")
   }
 
   const requiredFields = [
-    chapter.title,
-    chapter.description,
-    chapter.videoUrl,
+    quiz.title,
+    quiz.timeline,
+    quiz.questions.length > 0
   ];
 
   const totalFields = requiredFields.length;
@@ -54,82 +51,75 @@ const ChapterIdPage = async ({
 
   return (
     <>
-      {!chapter.isPublished && (
+      {!quiz.isPublished && (
         <Banner
           variant="warning"
-          label="This chapter is unpublished. It will not be visible in the course"
+          label="This quiz is unpublished. It will not be visible in the course"
         />
       )}
       <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
-              href={`/teacher/courses/${params.courseId}`}
+              href={`/teacher/courses/${params.courseId}/chapters/${params.chapterId}`}
               className="flex items-center text-sm hover:opacity-75 transition mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to course setup
+              Back to chapter setup
             </Link>
             <div className="flex items-center justify-between w-full">
               <div className="flex flex-col gap-y-2">
                 <h1 className="text-2xl font-medium">
-                  Chapter Creation
+                  Quiz Editing
                 </h1>
                 <span className="text-sm text-slate-700">
                   Complete all fields {completionText}
                 </span>
               </div>
-              <ChapterActions
-                disabled={!isComplete}
-                courseId={params.courseId}
-                chapterId={params.chapterId}
-                isPublished={chapter.isPublished}
-              />
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div className="space-y-4">
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={LayoutDashboard} />
                 <h2 className="text-xl">
-                  Customize your chapter
+                  Customize your quiz
                 </h2>
               </div>
-              <ChapterTitleForm
-                initialData={chapter}
+              <QuizTitleForm
+                initialData={quiz}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                quizId={params.quizId}
               />
-              <ChapterDescriptionForm
-                initialData={chapter}
+              <QuizTimelineForm
+                initialData={quiz}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                quizId={params.quizId}
               />
-              <ChapterQuizForm
-                initialData={chapter}
-                chapterId={params.chapterId} 
-                courseId={params.courseId} />
             </div>
           </div>
           <div>
             <div className="flex items-center gap-x-2">
-              <IconBadge icon={Video} />
+              <IconBadge icon={CircleHelp} />
               <h2 className="text-xl">
-                Add a video
+                Add Questions
               </h2>
             </div>
-            <ChapterVideoForm
-              initialData={chapter}
-              chapterId={params.chapterId}
+            <QuizQuestionsForm
+              initialData={quiz.questions}
               courseId={params.courseId}
+              chapterId={params.chapterId}
+              quizId={params.quizId}
             />
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 }
 
-export default ChapterIdPage;
+export default QuizIdPage;

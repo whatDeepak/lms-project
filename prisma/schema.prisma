@@ -1,13 +1,11 @@
-
-// prisma/schema.prisma
 datasource db {
-  provider  = "mongodb"
-  url       = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
-   previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 enum UserRole {
@@ -17,29 +15,30 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid()) @map("_id")
-  name          String?
-  rollNo        String?   @default("")
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  role          UserRole? @default(USER)
-  accounts      Account[]
+  id              String           @id @default(cuid()) @map("_id")
+  name            String?
+  rollNo          String?          @default("")
+  email           String?          @unique
+  emailVerified   DateTime?
+  image           String?
+  role            UserRole?        @default(USER)
+  accounts        Account[]
+  checkInDates    DateTime[]       @default([])  // New field to store check-in dates
 }
 
 model Account {
-  id                 String  @id @default(cuid()) @map("_id")
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -52,20 +51,22 @@ model Teacher {
 }
 
 model Course {
-  id String @id @default(cuid()) @map("_id")
-  userId String
-  title String 
-  description String? 
-  imageUrl String? 
+  id          String  @id @default(cuid()) @map("_id")
+  userId      String
+  title       String
+  description String?
+  imageUrl    String?
   isPublished Boolean @default(false)
 
   categoryId String?
-  category Category? @relation(fields: [categoryId], references: [id])
-  
-  chapters Chapter[]
-  attachments Attachment[]
-  purchases Purchase[]
-  
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  chapters        Chapter[]
+  attachments     Attachment[]
+  purchases       Purchase[]
+  watchLater      WatchLater[]
+  favoriteCourses FavoriteCourse[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -74,18 +75,18 @@ model Course {
 }
 
 model Category {
-  id String @id @default(cuid()) @map("_id")
-  name String @unique
+  id      String   @id @default(cuid()) @map("_id")
+  name    String   @unique
   courses Course[]
 }
 
 model Attachment {
-  id String @id @default(cuid()) @map("_id")
+  id   String @id @default(cuid()) @map("_id")
   name String
-  url String 
+  url  String
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,19 +94,19 @@ model Attachment {
   @@index([courseId])
 }
 
-
 model Chapter {
-  id String @id @default(cuid()) @map("_id")
-  title String
-  description String? 
-  videoUrl String?
-  position Int
+  id          String  @id @default(cuid()) @map("_id")
+  title       String
+  description String?
+  videoUrl    String?
+  position    Int
   isPublished Boolean @default(false)
-  isFree Boolean @default(true)
+  isFree      Boolean @default(true)
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
+  quizzes Quiz[]
   userProgress UserProgress[]
 
   createdAt DateTime @default(now())
@@ -114,13 +115,52 @@ model Chapter {
   @@index([courseId])
 }
 
-
-model UserProgress {
-  id String @id @default(cuid()) @map("_id")
-  userId String
+model Quiz {
+  id          String  @id @default(cuid()) @map("_id")
+  title       String
+  description String?
+  timeline    Int // in minutes
+  isPublished Boolean @default(false)
+  position    Int
 
   chapterId String
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  questions Question[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
+}
+
+model Question {
+  id       String   @id @default(cuid()) @map("_id")
+  text     String
+  type     QuestionType
+  options  String[] @default([])  // Stores options as an array
+  answers  String[] @default([])  // Stores correct answers as an array for MCQ
+
+  quizId String
+  quiz   Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([quizId])
+}
+
+enum QuestionType {
+  NORMAL
+  MCQ
+}
+
+model UserProgress {
+  id     String @id @default(cuid()) @map("_id")
+  userId String
+
+  chapterId         String
+  chapter           Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   watchedPercentage Int     @default(0) // New field to store the percentage watched
 
   isCompleted Boolean @default(false)
@@ -128,19 +168,47 @@ model UserProgress {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([chapterId])
   @@unique([userId, chapterId])
+  @@index([chapterId])
 }
 
 model Purchase {
-  id String @id @default(cuid()) @map("_id")
+  id     String @id @default(cuid()) @map("_id")
   userId String
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model WatchLater {
+  id       String @id @default(cuid()) @map("_id")
+  userId   String
+  courseId String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model FavoriteCourse {
+  id       String @id @default(cuid()) @map("_id")
+  userId   String
+  courseId String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, courseId])
   @@index([courseId])
