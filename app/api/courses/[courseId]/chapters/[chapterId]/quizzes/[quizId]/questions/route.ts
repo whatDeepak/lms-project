@@ -44,35 +44,40 @@ export async function PATCH(
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    // Map over questions and update them individually
+    const existingQuestionIds = existingQuiz.questions.map((q) => q.id);
+
+    // Update or create each question individually
     const updatedQuestions = await Promise.all(questions.map(async (question: any) => {
-      // Find the existing question or create a new one if it doesn't exist
-      const existingQuestion = existingQuiz.questions.find(q => q.id === question.id);
-      if (!existingQuestion) {
+      if (question.id) {
+        // Update existing question
+        return db.question.update({
+          where: { id: question.id },
+          data: {
+            text: question.text,
+            type: question.type,
+            option1: question.option1,
+            option2: question.option2,
+            option3: question.option3,
+            option4: question.option4,
+            answer: question.answer,
+          },
+        });
+      } else {
+        // Create new question
         return db.question.create({
           data: {
             ...question,
             quizId: params.quizId,
-          }
+          },
         });
       }
-
-      // Update the existing question
-      return db.question.update({
-        where: { id: question.id },
-        data: {
-          text: question.text,
-          type: question.type,
-          option1: question.option1,
-          option2: question.option2,
-          option3: question.option3,
-          option4: question.option4,
-          answer: question.answer,
-        }
-      });
     }));
 
-    // Return the updated quiz with questions
+    // Delete questions that were not updated
+    const questionsToDelete = existingQuestionIds.filter((id) => !questions.some((q: { id: string; }) => q.id === id));
+    await Promise.all(questionsToDelete.map((id) => db.question.delete({ where: { id } })));
+
+    // Fetch the updated quiz with questions
     const updatedQuiz = await db.quiz.findUnique({
       where: {
         id: params.quizId,
