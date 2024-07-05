@@ -1,6 +1,5 @@
 "use client";
 
-// VideoPlayer.tsx
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -9,8 +8,23 @@ import { Loader2, Lock } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
+import { Question } from "@prisma/client";
+import QuizCard from "./quiz-card";
 
 const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+
+interface Quiz {
+  id: string;
+  title: string;
+  description: string | null;
+  timeline: number;
+  isPublished: boolean;
+  position: number;
+  chapterId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  questions: Question[];
+}
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -20,7 +34,8 @@ interface VideoPlayerProps {
   isLocked: boolean;
   completeOnEnd: boolean;
   title: string;
-  quizTimelineSeconds: number; // New prop for quiz timeline
+  quizTimelineSeconds: number;
+  quizzes: Quiz[];
 }
 
 export const VideoPlayer = ({
@@ -32,9 +47,11 @@ export const VideoPlayer = ({
   completeOnEnd,
   title,
   quizTimelineSeconds,
+  quizzes,
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
   const [showQuizBlocker, setShowQuizBlocker] = useState(false);
+  const [showQuizCard, setShowQuizCard] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
@@ -69,11 +86,17 @@ export const VideoPlayer = ({
   };
 
   const startQuiz = () => {
-    if (!quizCompleted) {
-      toast.error("Finish the quiz to view further");
+    if (quizzes.length > 0) {
+      setShowQuizBlocker(false);
+      setShowQuizCard(true);
     } else {
-      // Navigate or show further content
+      console.error("No quizzes found for this chapter");
     }
+  };
+
+  const handleQuizComplete = () => {
+    setQuizCompleted(true);
+    setShowQuizCard(false);
   };
 
   return (
@@ -87,7 +110,7 @@ export const VideoPlayer = ({
       {showQuizBlocker && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-secondary">
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <p className="text-sm">Finish the quiz to view further</p>
+            <p className="text-sm">Finish the quiz to view further</p>
             <button
               onClick={startQuiz}
               className="mt-4 px-4 py-2 bg-custom-primary text-white rounded-md hover:bg-custom-primary/90 transition-colors"
@@ -100,12 +123,10 @@ export const VideoPlayer = ({
       {isLocked && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-secondary">
           <Lock className="h-8 w-8" />
-          <p className="text-sm">
-            This chapter is locked
-          </p>
+          <p className="text-sm">This chapter is locked</p>
         </div>
       )}
-      {!isLocked && !showQuizBlocker && (
+      {!isLocked && !showQuizBlocker && !showQuizCard && (
         <ReactPlayer
           ref={playerRef}
           url={videoUrl}
@@ -115,7 +136,7 @@ export const VideoPlayer = ({
           onProgress={(progress) => {
             if (!quizCompleted && progress.playedSeconds >= quizTimelineSeconds) {
               setShowQuizBlocker(true);
-              playerRef.current?.pause(); // Pause the video
+              playerRef.current?.pause();
             }
           }}
           onEnded={handleEnd}
@@ -130,6 +151,11 @@ export const VideoPlayer = ({
             },
           }}
         />
+      )}
+      {showQuizCard && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90 text-white">
+          <QuizCard questions={quizzes[0].questions} onQuizComplete={handleQuizComplete} />
+        </div>
       )}
     </div>
   );

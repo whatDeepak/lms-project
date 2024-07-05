@@ -36,6 +36,9 @@ export const getChapter = async ({
         id: chapterId,
         isPublished: true,
       },
+      include: {
+        quizzes: true, // Include quizzes related to the chapter
+      },
     });
 
     if (!chapter || !course) {
@@ -53,13 +56,9 @@ export const getChapter = async ({
         },
       });
 
-      const quiz = await db.quiz.findMany({
-        where: {
-          chapterId: chapterId,
-        },
-      });
-
-      quizTimelineSeconds = quiz.length > 0 ? quiz[0].timeline : 0;
+      if (chapter.quizzes && chapter.quizzes.length > 0) {
+        quizTimelineSeconds = chapter.quizzes[0].timeline;
+      }
     }
 
     if (chapter.isFree || purchase) {
@@ -68,7 +67,7 @@ export const getChapter = async ({
           courseId: courseId,
           isPublished: true,
           position: {
-            gt: chapter?.position,
+            gt: chapter.position,
           },
         },
         orderBy: {

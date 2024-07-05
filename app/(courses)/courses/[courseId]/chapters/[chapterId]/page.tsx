@@ -10,6 +10,7 @@ import { CourseProgressButton } from "./_components/course-progress-button";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { getChapter } from "@/actions/Courses/get-chapter";
 import { checkPurchase } from "@/actions/Courses/get-purchase";
+import { getQuizData } from "@/actions/Courses/get-quiz"; // Import getQuizData function
 import { VideoPlayer } from "./_components/video-player";
 
 const ChapterIdPage = async ({
@@ -46,6 +47,9 @@ const ChapterIdPage = async ({
   const isLocked = !purchased;
   const completeOnEnd = !userProgress?.isCompleted;
 
+  // Fetch quiz data using getQuizData function
+  const quizzes = await getQuizData({ chapterId: params.chapterId });
+
   return (
     <div>
       <div>
@@ -69,6 +73,7 @@ const ChapterIdPage = async ({
               isLocked={isLocked}
               completeOnEnd={completeOnEnd}
               quizTimelineSeconds={quizTimelineSeconds}
+              quizzes={quizzes} // Pass quizzes data as prop to VideoPlayer
             />
           </div>
           <div>
