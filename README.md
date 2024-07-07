@@ -17,3 +17,8 @@ Course Catalog: Browse through a wide range of courses covering various topics, 
 Engaging Content: Enjoy high-quality video lectures, interactive quizzes, and downloadable resources.
 
 Instructor Tools: Create and manage courses effortlessly, engage with students through discussions, and track course analytics.
+
+## License
+
+This project is licensed under **No License**. All rights are reserved. Unauthorized use, copying, modification, and distribution of this code are strictly prohibited.
+
