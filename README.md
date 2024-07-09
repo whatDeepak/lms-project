@@ -18,5 +18,5 @@ Instructor Tools: Create and manage courses effortlessly, engage with students t
 
 ## License
 
-This project is licensed under **No License**. All rights are reserved. Unauthorized use, copying, modification, and distribution of this code are strictly prohibited.
+This project is licensed under **No Permission License**. All rights are reserved. Unauthorized use, copying, modification, and distribution of this code are strictly prohibited.
 
