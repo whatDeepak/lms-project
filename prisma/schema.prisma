@@ -24,6 +24,8 @@ model User {
   role            UserRole?        @default(USER)
   accounts        Account[]
   checkInDates    DateTime[]       @default([])  // New field to store check-in dates
+
+  quizAttempts    QuizAttempt[]
 }
 
 model Account {
@@ -127,6 +129,7 @@ model Quiz {
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   questions Question[]
+  quizAttempts    QuizAttempt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -157,6 +160,20 @@ enum QuestionType {
   NORMAL
   MCQ
 }
+
+model QuizAttempt {
+  id         String      @id @default(cuid()) @map("_id")
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId     String
+  quiz       Quiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  score      Int
+  answers    Json        // Store answers in JSON format
+  createdAt  DateTime    @default(now())
+
+  @@unique([userId, quizId])
+}
+
 
 model UserProgress {
   id     String @id @default(cuid()) @map("_id")

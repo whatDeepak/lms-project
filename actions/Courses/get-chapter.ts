@@ -1,7 +1,7 @@
 // getChapter.ts
 
 import { db } from "@/lib/db";
-import { Attachment, Chapter, Quiz } from "@prisma/client";
+import { Attachment, Chapter, Quiz, QuizAttempt } from "@prisma/client";
 
 interface GetChapterProps {
   userId: string;
@@ -47,7 +47,7 @@ export const getChapter = async ({
 
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
-    let quizTimelineSeconds: number = 0;
+    let quizTimelineSeconds: number | null = null;
 
     if (purchase) {
       attachments = await db.attachment.findMany({
@@ -56,8 +56,23 @@ export const getChapter = async ({
         },
       });
 
-      if (chapter.quizzes && chapter.quizzes.length > 0) {
-        quizTimelineSeconds = chapter.quizzes[0].timeline;
+      // Fetch quiz attempts for the user
+      const quizAttempts = await db.quizAttempt.findMany({
+        where: {
+          userId,
+          quizId: {
+            in: chapter.quizzes.map((quiz) => quiz.id),
+          },
+        },
+      });
+
+      // Determine the next quiz timeline that hasn't been completed
+      const incompleteQuizzes = chapter.quizzes.filter(
+        (quiz) => !quizAttempts.some((attempt) => attempt.quizId === quiz.id)
+      );
+
+      if (incompleteQuizzes.length > 0) {
+        quizTimelineSeconds = incompleteQuizzes[0].timeline;
       }
     }
 
@@ -103,7 +118,7 @@ export const getChapter = async ({
       nextChapter: null,
       userProgress: null,
       purchase: null,
-      quizTimelineSeconds: 0,
+      quizTimelineSeconds: null,
     };
   }
 };

@@ -10,7 +10,8 @@ import { CourseProgressButton } from "./_components/course-progress-button";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { getChapter } from "@/actions/Courses/get-chapter";
 import { checkPurchase } from "@/actions/Courses/get-purchase";
-import { getQuizData } from "@/actions/Courses/get-quiz"; // Import getQuizData function
+import { getQuizData } from "@/actions/Courses/get-quiz";
+import { getQuizAttempt } from "@/actions/Courses/get-quiz-attempt"; // Import getQuizAttempt function
 import { VideoPlayer } from "./_components/video-player";
 
 const ChapterIdPage = async ({
@@ -32,7 +33,6 @@ const ChapterIdPage = async ({
     nextChapter,
     userProgress,
     purchase,
-    quizTimelineSeconds,
   } = await getChapter({
     userId,
     chapterId: params.chapterId,
@@ -49,6 +49,18 @@ const ChapterIdPage = async ({
 
   // Fetch quiz data using getQuizData function
   const quizzes = await getQuizData({ chapterId: params.chapterId });
+
+  // Filter out completed quizzes
+  const incompleteQuizzes = [];
+  for (const quiz of quizzes) {
+    const quizAttempt = await getQuizAttempt({ userId, quizId: quiz.id });
+    if (!quizAttempt) {
+      incompleteQuizzes.push(quiz);
+    }
+  }
+
+  // Determine the timeline for the first incomplete quiz
+  const quizTimelineSeconds = incompleteQuizzes.length > 0 ? incompleteQuizzes[0].timeline : 0;
 
   return (
     <div>
@@ -73,7 +85,7 @@ const ChapterIdPage = async ({
               isLocked={isLocked}
               completeOnEnd={completeOnEnd}
               quizTimelineSeconds={quizTimelineSeconds}
-              quizzes={quizzes} // Pass quizzes data as prop to VideoPlayer
+              quizzes={incompleteQuizzes}
             />
           </div>
           <div>

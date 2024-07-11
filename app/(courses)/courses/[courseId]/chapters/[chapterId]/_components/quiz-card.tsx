@@ -1,23 +1,23 @@
-"use client"
-
 import React, { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import { Question } from "@prisma/client";
 import Link from "next/link";
+import axios from "axios";
+import { Question } from "@prisma/client";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface QuizCardProps {
   questions: Question[];
   onQuizComplete: () => void; // Callback when quiz is complete
+  quizId: string; // Pass the quiz ID
 }
 
-const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
+const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [answers, setAnswers] = useState<boolean[]>([]); // Array to store correct/incorrect answers
+  const [answers, setAnswers] = useState<{ questionId: string; correct: boolean }[]>([]); // Array to store correct/incorrect answers
   const [quizDone, setQuizDone] = useState(false);
   const [score, setScore] = useState(0);
   const confetti = useConfettiStore();
@@ -33,7 +33,7 @@ const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
   const submitAnswer = () => {
     if (selectedAnswer !== null) {
       const isCorrect = selectedAnswer === questions[currentQuestionIndex].answer;
-      setAnswers((prevAnswers) => [...prevAnswers, isCorrect]);
+      setAnswers((prevAnswers) => [...prevAnswers, { questionId: questions[currentQuestionIndex].id, correct: isCorrect }]);
       setIsSubmitted(true);
       if (isCorrect) {
         setScore((prevScore) => prevScore + 1);
@@ -51,10 +51,28 @@ const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
     }
   };
 
-  const submitQuiz = () => {
+  const submitQuiz = async () => {
     setIsSubmitted(true); // Mark quiz as fully submitted
     setQuizDone(true); // Quiz is now complete
     confetti.onOpen();
+
+    // Prepare quiz attempt data
+    const attemptData = {
+      quizId,
+      score,
+      answers,
+    };
+
+    console.log("Attempting to submit quiz with quizId:", quizId);
+
+    // Send the data to the backend
+    try {
+      console.log("Attempt Data:", attemptData);
+      await axios.post(`/api/user/quizAttempts`, attemptData);
+      console.log("Quiz attempt submitted successfully");
+    } catch (error) {
+      console.error("Failed to submit quiz attempt:", error);
+    }
   };
 
   const checkAnswer = (question: Question, answer: string) => {
@@ -62,8 +80,7 @@ const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
   };
 
   const renderQuestion = (question: Question) => {
-    const isCorrect = answers[currentQuestionIndex] === true;
-    const isIncorrect = answers[currentQuestionIndex] === false;
+    const isCorrect = answers.some((answer) => answer.questionId === question.id && answer.correct);
 
     return (
       <div key={question.id} className="mt-4">
@@ -92,7 +109,7 @@ const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
                     {isSubmitted && selectedAnswer === option && (
                       <div className="ml-auto">
                         {isCorrect && <FaCheckCircle size={20} color="#0cde0c" />}
-                        {isIncorrect && <FaTimesCircle size={20} color="#de3c3c" />}
+                        {!isCorrect && <FaTimesCircle size={20} color="#de3c3c" />}
                       </div>
                     )}
                   </div>
@@ -154,7 +171,7 @@ const QuizCard = ({ questions, onQuizComplete }: QuizCardProps) => {
         <div className="flex flex-col items-center">
           <h2 className="text-3xl text-black font-bold mb-4">Quiz Result</h2>
           <p className="text-2xl text-black mt-4">{score}/{questions.length} Questions Correct!</p>
-          <Link href="" onClick={onQuizComplete} className="mt-8">
+          <Link href="#" onClick={onQuizComplete} className="mt-8">
             <Button variant="default">Back to Video</Button>
           </Link>
         </div>
