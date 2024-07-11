@@ -171,7 +171,7 @@ model QuizAttempt {
   answers    Json        // Store answers in JSON format
   createdAt  DateTime    @default(now())
 
-  @@index([userId, quizId])
+  @@unique([userId, quizId])
 }
 
 

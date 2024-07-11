@@ -1,5 +1,5 @@
-"use client";
-
+// video-player.tsx
+"use client"
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -35,7 +35,7 @@ interface VideoPlayerProps {
   completeOnEnd: boolean;
   title: string;
   quizTimelineSeconds: number;
-  quizzes: Quiz[]; 
+  quizzes: Quiz[];
 }
 
 export const VideoPlayer = ({
@@ -53,6 +53,7 @@ export const VideoPlayer = ({
   const [showQuizBlocker, setShowQuizBlocker] = useState(false);
   const [showQuizCard, setShowQuizCard] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const router = useRouter();
   const confetti = useConfettiStore();
   const playerRef = useRef<any>(null);
@@ -97,7 +98,14 @@ export const VideoPlayer = ({
   const handleQuizComplete = () => {
     setQuizCompleted(true);
     setShowQuizCard(false);
+    setCurrentQuizIndex(currentQuizIndex + 1);
   };
+
+  useEffect(() => {
+    if (currentQuizIndex < quizzes.length) {
+      setQuizCompleted(false);
+    }
+  }, [currentQuizIndex]);
 
   return (
     <div className="relative aspect-video">
@@ -134,7 +142,11 @@ export const VideoPlayer = ({
           width="100%"
           height="100%"
           onProgress={(progress) => {
-            if (!quizCompleted && progress.playedSeconds >= quizTimelineSeconds) {
+            if (
+              !quizCompleted &&
+              currentQuizIndex < quizzes.length &&
+              progress.playedSeconds >= quizzes[currentQuizIndex].timeline
+            ) {
               setShowQuizBlocker(true);
               playerRef.current?.pause();
             }
@@ -152,9 +164,13 @@ export const VideoPlayer = ({
           }}
         />
       )}
-      {showQuizCard && (
+      {showQuizCard && currentQuizIndex < quizzes.length && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90 text-white">
-          <QuizCard questions={quizzes[0].questions} onQuizComplete={handleQuizComplete} quizId={quizzes[0].id} />
+          <QuizCard
+            questions={quizzes[currentQuizIndex].questions}
+            onQuizComplete={handleQuizComplete}
+            quizId={quizzes[currentQuizIndex].id}
+          />
         </div>
       )}
     </div>

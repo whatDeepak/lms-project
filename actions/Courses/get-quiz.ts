@@ -16,6 +16,9 @@ export const getQuizData = async ({ chapterId }: GetQuizDataProps) => {
       include: {
         questions: true, // Include questions related to each quiz
       },
+      orderBy: {
+        timeline: "asc",
+      },
     });
 
     return quizzes;
