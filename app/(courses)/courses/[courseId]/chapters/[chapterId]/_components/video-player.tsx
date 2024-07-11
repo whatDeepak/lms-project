@@ -35,7 +35,7 @@ interface VideoPlayerProps {
   completeOnEnd: boolean;
   title: string;
   quizTimelineSeconds: number;
-  quizzes: Quiz[];
+  quizzes: Quiz[]; 
 }
 
 export const VideoPlayer = ({
@@ -154,7 +154,7 @@ export const VideoPlayer = ({
       )}
       {showQuizCard && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90 text-white">
-          <QuizCard questions={quizzes[0].questions} onQuizComplete={handleQuizComplete} />
+          <QuizCard questions={quizzes[0].questions} onQuizComplete={handleQuizComplete} quizId={quizzes[0].id} />
         </div>
       )}
     </div>

@@ -73,7 +73,7 @@ const ChapterIdPage = async ({
               isLocked={isLocked}
               completeOnEnd={completeOnEnd}
               quizTimelineSeconds={quizTimelineSeconds}
-              quizzes={quizzes} // Pass quizzes data as prop to VideoPlayer
+              quizzes={quizzes}
             />
           </div>
           <div>
