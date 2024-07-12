@@ -143,7 +143,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardP
   const progressValue = (currentQuestionIndex + 1) / questions.length * 100;
 
   return (
-    <div className="p-8 bg-white rounded-2xl shadow-md max-w-lg mx-auto min-h-[450px] w-full md:w-3/4 lg:w-1/2">
+    <div className="p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-md max-w-md mx-auto min-h-[350px] w-full mt-[140px] md:mt-[100px] lg:mt-[100px] xl:mt-0 z-50 relative">
       {!quizDone && (
         <>
           <Progress value={progressValue} className="w-full mb-4" />
