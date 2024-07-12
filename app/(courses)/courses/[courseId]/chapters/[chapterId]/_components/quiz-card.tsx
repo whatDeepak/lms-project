@@ -9,11 +9,12 @@ import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface QuizCardProps {
   questions: Question[];
-  onQuizComplete: () => void; // Callback when quiz is complete
+  onQuizComplete: (quizTimeline: number) => void; // Callback when quiz is complete
   quizId: string; // Pass the quiz ID
+  quizTimeline: number; // Pass the quiz timeline
 }
 
-const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
+const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -142,7 +143,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
   const progressValue = (currentQuestionIndex + 1) / questions.length * 100;
 
   return (
-    <div className="p-8 bg-white rounded-2xl shadow-md max-w-lg mx-auto min-h-[450px] w-full md:w-3/4 lg:w-1/2">
+    <div className="p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-md max-w-md mx-auto min-h-[350px] w-full mt-[140px] md:mt-[100px] lg:mt-[100px] xl:mt-0 z-50 relative">
       {!quizDone && (
         <>
           <Progress value={progressValue} className="w-full mb-4" />
@@ -171,7 +172,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
         <div className="flex flex-col items-center">
           <h2 className="text-3xl text-black font-bold mb-4">Quiz Result</h2>
           <p className="text-2xl text-black mt-4">{score}/{questions.length} Questions Correct!</p>
-          <Link href="#" onClick={onQuizComplete} className="mt-8">
+          <Link href="#" onClick={() => onQuizComplete(quizTimeline)} className="mt-8">
             <Button variant="default">Back to Video</Button>
           </Link>
         </div>

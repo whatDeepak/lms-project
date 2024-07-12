@@ -1,4 +1,3 @@
-// video-player.tsx
 "use client"
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -54,6 +53,8 @@ export const VideoPlayer = ({
   const [showQuizCard, setShowQuizCard] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [resumeTime, setResumeTime] = useState<number | null>(null);
+  const [updatedVideoUrl, setUpdatedVideoUrl] = useState<string>(videoUrl);
   const router = useRouter();
   const confetti = useConfettiStore();
   const playerRef = useRef<any>(null);
@@ -95,10 +96,12 @@ export const VideoPlayer = ({
     }
   };
 
-  const handleQuizComplete = () => {
+  const handleQuizComplete = (quizTimeline: number) => {
     setQuizCompleted(true);
     setShowQuizCard(false);
     setCurrentQuizIndex(currentQuizIndex + 1);
+    setResumeTime(quizTimeline);
+    router.refresh();
   };
 
   useEffect(() => {
@@ -106,6 +109,19 @@ export const VideoPlayer = ({
       setQuizCompleted(false);
     }
   }, [currentQuizIndex]);
+
+  useEffect(() => {
+    if (resumeTime !== null && playerRef.current) {
+      playerRef.current.seekTo(resumeTime, "seconds");
+    }
+  }, [resumeTime]);
+
+  useEffect(() => {
+    if (resumeTime !== null) {
+      const newVideoUrl = `${videoUrl}#t=${resumeTime}`;
+      setUpdatedVideoUrl(newVideoUrl);
+    }
+  }, [resumeTime, videoUrl]);
 
   return (
     <div className="relative aspect-video">
@@ -137,7 +153,7 @@ export const VideoPlayer = ({
       {!isLocked && !showQuizBlocker && !showQuizCard && (
         <ReactPlayer
           ref={playerRef}
-          url={videoUrl}
+          url={updatedVideoUrl}
           controls
           width="100%"
           height="100%"
@@ -148,6 +164,7 @@ export const VideoPlayer = ({
               progress.playedSeconds >= quizzes[currentQuizIndex].timeline
             ) {
               setShowQuizBlocker(true);
+              setResumeTime(progress.playedSeconds); // Store the resume time
               playerRef.current?.pause();
             }
           }}
@@ -170,6 +187,7 @@ export const VideoPlayer = ({
             questions={quizzes[currentQuizIndex].questions}
             onQuizComplete={handleQuizComplete}
             quizId={quizzes[currentQuizIndex].id}
+            quizTimeline={quizzes[currentQuizIndex].timeline}
           />
         </div>
       )}
