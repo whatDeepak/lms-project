@@ -9,11 +9,12 @@ import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface QuizCardProps {
   questions: Question[];
-  onQuizComplete: () => void; // Callback when quiz is complete
+  onQuizComplete: (quizTimeline: number) => void; // Callback when quiz is complete
   quizId: string; // Pass the quiz ID
+  quizTimeline: number; // Pass the quiz timeline
 }
 
-const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
+const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -171,7 +172,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId }: QuizCardProps) => {
         <div className="flex flex-col items-center">
           <h2 className="text-3xl text-black font-bold mb-4">Quiz Result</h2>
           <p className="text-2xl text-black mt-4">{score}/{questions.length} Questions Correct!</p>
-          <Link href="#" onClick={onQuizComplete} className="mt-8">
+          <Link href="#" onClick={() => onQuizComplete(quizTimeline)} className="mt-8">
             <Button variant="default">Back to Video</Button>
           </Link>
         </div>
