@@ -1,4 +1,4 @@
-const AnalyticsPage = () => {
+const InstructorPage = () => {
     return ( 
       <div className="p-6">
         Hello
@@ -6,4 +6,4 @@ const AnalyticsPage = () => {
      );
   }
    
-  export default AnalyticsPage;
+  export default InstructorPage;
