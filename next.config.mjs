@@ -3,7 +3,9 @@ const nextConfig = {
     images: {
         domains: [
           "uploadthing.com",
-          "utfs.io"
+          "utfs.io",
+          "lh3.googleusercontent.com",
+          "images.unsplash.com"
         ]
       }
 };

@@ -6,9 +6,6 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const instructorName= searchParams.get('instructor');
   
-    console.log("Instructor Name: ", instructorName)
-   
-  
     try {
       // Fetch instructors
       let teachers;
@@ -20,6 +17,7 @@ export async function GET(req: NextRequest) {
             role: UserRole.TEACHER
           },
           select: {
+            id: true,
             name: true,
             email: true,
             image: true
@@ -36,13 +34,13 @@ export async function GET(req: NextRequest) {
             }
           },
           select: {
+            id: true,
             name: true,
             email: true,
             image: true
           }
         });
       }
-      console.log("Teachers : ", teachers)
       return NextResponse.json({ teachers }, { status: 200 });
     } catch (error) {
       console.error("[GET_INSTRUCTORS]", error);
