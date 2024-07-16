@@ -1,13 +1,8 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect,useState } from "react";
 import Image from "next/image";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { AnimatedTooltip } from "@/components/ui/animate-tooltip";

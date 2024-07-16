@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input"
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Search } from "lucide-react";
 
 interface searchInputProps{
@@ -17,7 +17,6 @@ debouncedValue
 }:searchInputProps) {
 
 
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
