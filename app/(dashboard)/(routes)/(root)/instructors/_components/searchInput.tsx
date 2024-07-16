@@ -40,8 +40,8 @@ debouncedValue
     <Input
       onChange={(e) => setValue(e.target.value)}
       value={value}
-      className="w-full md:w-[300px] pl-9 rounded-full bg-slate-100 focus-visible:ring-slate-200"
-      placeholder="Search for a Instructor"
+      className=" w-[170px] md:w-[300px] pl-9 rounded-full text-xs sm:text-sm bg-slate-100 focus-visible:ring-slate-200"
+      placeholder="Search for Instructor"
     />
   </div>
   )

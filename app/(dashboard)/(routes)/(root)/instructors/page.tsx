@@ -54,7 +54,7 @@ const InstructorPage = () => {
       <>
       <div >
       <div className="w-full flex items-center justify-between px-6 bg-custom-primary h-16 sm:h-24">
-     <h1 className="text-[12px] sm:text-2xl md:text-3xl  text-white font-semibold ">Our Instructors</h1>
+     <h1 className="text-[16px] sm:text-2xl md:text-3xl  text-white font-semibold ">Instructors</h1>
      <SearchInput value={value} setValue={setValue} debouncedValue={debouncedValue} />
       </div>
       

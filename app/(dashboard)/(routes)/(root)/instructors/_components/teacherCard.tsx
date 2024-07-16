@@ -56,7 +56,7 @@ const TeacherCard: React.FC<TeacherCardProps> = ({
   }, [id]);
   return (
     <>
-      <Card className="group hover:shadow-sm transition  border bg-gray-100 hover:bg-gray-200 rounded-lg   relative  md:max-w-[450px]">
+      <Card className="group hover:shadow-sm transition   bg-gray-100 hover:bg-gray-200 rounded-lg   relative  md:max-w-[460px] ">
         <div className="flex items-center justify-start ">
           <div className="overflow-hidden  rounded-md  h-full">
             <Image
@@ -69,7 +69,7 @@ const TeacherCard: React.FC<TeacherCardProps> = ({
             />
           </div>
 
-          <div className="p-4 border w-full h-full flex  flex-col justify-start space-y-[6px] rounded-lg border-custom-primary ml-1 ">
+          <div className="p-2 sm:p-3 border w-full h-full flex  flex-col justify-start space-y-2 rounded-lg  ml-1 ">
             {loading ? (
               <StudentSkeleton />
             ) : (
@@ -77,18 +77,18 @@ const TeacherCard: React.FC<TeacherCardProps> = ({
                 <div className=" flex flex-row items-center justify-start ">
                   <AnimatedTooltip items={students} />
                 </div>
-                <div className="text-input-border pl-4 ">
-                  <p className="font-semibold">{StudentCount}+</p>
+                <div className="text-input-border pl-3 sm:pl-4 ">
+                  <p className="font-semibold text-sm sm:text-lg">{StudentCount}+</p>
                   <p className="text-xs font-normal -mt-1">Happy Students</p>
                 </div>
               </div>
             )}
-            <div className="flex items-center space-x-4">
-              <CardTitle className=" text-xl">{name}</CardTitle>
+            <div className="flex items-center justify-between space-x-1 sm:space-x-3 ">
+              <p className="font-medium text-xs sm:text-lg    m-0 ">{name}</p>
               <Link href={hrf}>
-                <Button variant="outline" className="rounded-full text-xs">
+                <Button variant="outline" className="rounded-full w-28 sm:w-full text-[10px] sm:text-xs px-2 h-7 sm:h-9 sm:px-4 sm:py-2">
                   Explore Courses{" "}
-                  <ArrowRight className="font-extralight pl-1 h-4 w-6" />{" "}
+                  <ArrowRight className="font-extralight pl-1  w-4 h-3 sm:h-4  sm:w-6" />{" "}
                 </Button>
               </Link>
             </div>
