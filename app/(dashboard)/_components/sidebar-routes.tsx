@@ -1,9 +1,10 @@
 "use client";
 
-import { BarChart, Compass, Heart, Layout, List } from "lucide-react";
+import { BarChart,Compass, Heart, Layout, List } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { SidebarItem } from "./sidebar-item";
+import { FaChalkboardTeacher } from "react-icons/fa";
 
 const guestRoutes = [
   {
@@ -17,15 +18,15 @@ const guestRoutes = [
     href: "/browse",
   },
   {
-    icon: BarChart,
-    label: "Analytics",
-    href: "/analytics",
-  },
-  {
     icon: Heart,
     label: "Collections",
     href: "/collections/favorites",
-  }
+  },
+  {
+    icon: FaChalkboardTeacher,
+    label: "Instructors",
+    href: "/instructors",
+  },
 ];
 
 const teacherRoutes = [
