@@ -22,11 +22,12 @@ export const CoursesList = ({
 ) => {
     const path= usePathname();
     const isCollectionPage=path.includes("collection");
+    const isInstructorPage=path.includes("instructors");
   return (
     <>
       <div 
       className={cn("grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 ",
-        isCollectionPage && "md:grid-cols-3 lg:grid-cols-4"
+        isCollectionPage ||isInstructorPage && "md:grid-cols-3 lg:grid-cols-4"
       )}
       >
         {items.map((item) => (
