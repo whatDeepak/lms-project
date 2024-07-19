@@ -1,7 +1,7 @@
 // components/Topbar.tsx
-"use client"
+"use client";
 import Link from 'next/link';
-import { Activity, ArrowUpRight, CircleUser, CreditCard, DollarSign, Menu, Package2, Search, Users } from 'lucide-react';
+import { Menu, Package2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
@@ -16,10 +16,16 @@ export const Topbar = () => {
         <div className="flex items-center gap-2 text-lg font-semibold md:text-base">
           <Package2 className="h-6 w-6" />
         </div>
-        <Link href="/teacher/analytics" className="text-foreground transition-colors hover:text-foreground">
+        <Link 
+          href="/teacher/analytics" 
+          className={`transition-colors ${pathname === '/teacher/analytics' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+        >
           Dashboard
         </Link>
-        <Link href="/teacher/analytics/courses" className="text-muted-foreground transition-colors hover:text-foreground">
+        <Link 
+          href="/teacher/analytics/courses" 
+          className={`transition-colors ${pathname === '/teacher/analytics/courses' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+        >
           Courses
         </Link>
       </nav>
@@ -35,10 +41,16 @@ export const Topbar = () => {
             <div className="flex items-center gap-2 text-lg font-semibold">
               <Package2 className="h-6 w-6" />
             </div>
-            <Link href="/teacher/analytics" className="hover:text-foreground">
+            <Link 
+              href="/teacher/analytics" 
+              className={`transition-colors ${pathname === '/teacher/analytics' ? 'text-foreground font-semibold' : 'hover:text-foreground'}`}
+            >
               Dashboard
             </Link>
-            <Link href="/teacher/analytics/courses" className="text-muted-foreground hover:text-foreground">
+            <Link 
+              href="/teacher/analytics/courses" 
+              className={`transition-colors ${pathname === '/teacher/analytics/courses' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+            >
               Courses
             </Link>
           </nav>

@@ -1,12 +1,10 @@
 // app/teacher/analytics/courses/page.tsx
 import React from 'react';
+import { CourseAnalytics } from './_components/course-analytics';
 
 const CoursesPage = () => {
   return (
-    <div>
-      <h1>Courses</h1>
-      {/* Your courses content here */}
-    </div>
+    <CourseAnalytics/>
   );
 };
 
