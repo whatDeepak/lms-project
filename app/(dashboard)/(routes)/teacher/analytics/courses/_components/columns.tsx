@@ -2,7 +2,7 @@
 
 import { Course } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react"
+import { ArrowUpDown, EyeIcon, MoreHorizontal, Pencil } from "lucide-react"
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Course>[] = [
           <DropdownMenuContent align="end">
             <Link href={`/teacher/analytics/courses/${id}`}>
               <DropdownMenuItem>
-                <Pencil className="h-4 w-4 mr-2" />
+                <EyeIcon className="h-4 w-4 mr-2" />
                 View Analytics
               </DropdownMenuItem>
             </Link>
