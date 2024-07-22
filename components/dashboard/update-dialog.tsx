@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { db } from "@/lib/db";
 
 interface UpdateDialogProps {
     onClose: () => void;

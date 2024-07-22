@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen, Heart, MoreVertical } from "lucide-react";
+import { BookOpen, MoreVertical } from "lucide-react";
 
 import { IconBadge } from "@/components/icon-badge";
 import { CourseProgress } from "@/components/course-progress";

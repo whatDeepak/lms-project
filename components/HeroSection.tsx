@@ -1,9 +1,7 @@
 import Image from "next/image";
-import homebg from "@/public/homebg.svg"; // Import the SVG file
 import NavBar from "@/components/Navbar";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { User, UserRole } from "@prisma/client";
 
 interface HeroProps {
   userId?: string 
