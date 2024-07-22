@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { OverviewChart } from "./overview-chart";
@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaUser } from "react-icons/fa";
+import { SkeletonLoader } from "./skeleton-loader";
+
 
 type RecentStudent = {
   name: string;
@@ -20,6 +22,7 @@ export function AnalyticsDashboard() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [courseTitles, setCourseTitles] = useState<{ [key: string]: string }>({});
   const [recentStudents, setRecentStudents] = useState<RecentStudent[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     async function fetchData() {
@@ -35,18 +38,24 @@ export function AnalyticsDashboard() {
         const enrollmentsResponse = await fetch('/api/teacher/analytics/enrollments');
         const enrollmentsData = await enrollmentsResponse.json();
         setEnrollments(enrollmentsData.enrollments);
-        setCourseTitles(enrollmentsData.courseTitles); // Set courseTitles from API response
+        setCourseTitles(enrollmentsData.courseTitles);
 
         const recentStudentsResponse = await fetch('/api/teacher/analytics/recent-students');
         const recentStudentsData = await recentStudentsResponse.json();
         setRecentStudents(recentStudentsData.recentStudents);
       } catch (error) {
         console.error('Failed to fetch analytics data', error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
     fetchData();
   }, []);
+
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
