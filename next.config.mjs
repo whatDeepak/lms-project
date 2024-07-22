@@ -23,8 +23,7 @@ const nextConfig = {
         pathname: "/**"
       }
     ]
-  },
-  optimizeFonts: true,
+  }
 };
 
 export default nextConfig;
