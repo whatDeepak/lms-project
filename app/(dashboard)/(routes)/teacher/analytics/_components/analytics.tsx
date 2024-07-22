@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { OverviewChart } from "./overview-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
+import { Users, CreditCard, Activity, Library } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaUser } from "react-icons/fa";
 import { SkeletonLoader } from "./skeleton-loader";
-
 
 type RecentStudent = {
   name: string;
@@ -27,21 +26,27 @@ export function AnalyticsDashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const coursesResponse = await fetch('/api/teacher/analytics/total-courses');
-        const coursesData = await coursesResponse.json();
+        setIsLoading(true);
+
+        // Fetch all data concurrently
+        const [coursesResponse, studentsResponse, enrollmentsResponse, recentStudentsResponse] = await Promise.all([
+          fetch('/api/teacher/analytics/total-courses'),
+          fetch('/api/teacher/analytics/total-students'),
+          fetch('/api/teacher/analytics/enrollments'),
+          fetch('/api/teacher/analytics/recent-students'),
+        ]);
+
+        const [coursesData, studentsData, enrollmentsData, recentStudentsData] = await Promise.all([
+          coursesResponse.json(),
+          studentsResponse.json(),
+          enrollmentsResponse.json(),
+          recentStudentsResponse.json(),
+        ]);
+
         setTotalCourses(coursesData.totalCourses);
-
-        const studentsResponse = await fetch('/api/teacher/analytics/total-students');
-        const studentsData = await studentsResponse.json();
         setTotalStudents(studentsData.totalStudents);
-
-        const enrollmentsResponse = await fetch('/api/teacher/analytics/enrollments');
-        const enrollmentsData = await enrollmentsResponse.json();
         setEnrollments(enrollmentsData.enrollments);
         setCourseTitles(enrollmentsData.courseTitles);
-
-        const recentStudentsResponse = await fetch('/api/teacher/analytics/recent-students');
-        const recentStudentsData = await recentStudentsResponse.json();
         setRecentStudents(recentStudentsData.recentStudents);
       } catch (error) {
         console.error('Failed to fetch analytics data', error);
@@ -65,7 +70,7 @@ export function AnalyticsDashboard() {
             <CardTitle className="text-sm font-medium">
               Total Courses
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <Library className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalCourses}</div>
