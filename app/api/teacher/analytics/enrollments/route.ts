@@ -50,13 +50,25 @@ export async function GET(req: NextRequest) {
             const courseId = enrollment.courseId;
             if (!acc[date]) {
                 acc[date] = { date };
+                // Initialize all course titles to zero
+                topCourseIds.forEach(id => {
+                    acc[date][courseTitles[id]] = 0;
+                });
             }
-            acc[date][courseTitles[courseId]] = (acc[date][courseTitles[courseId]] || 0) + 1;
+            acc[date][courseTitles[courseId]] += 1;
             return acc;
         }, {});
 
-        const result = Object.values(transformedEnrollments);
-        
+        // Ensure all dates have all courses
+        const allDates = Object.keys(transformedEnrollments).sort();
+        const result = allDates.map(date => {
+            return topCourseIds.reduce((acc, courseId) => {
+                acc.date = date;
+                acc[courseTitles[courseId]] = transformedEnrollments[date][courseTitles[courseId]] || 0;
+                return acc;
+            }, {} as any);
+        });
+
         return NextResponse.json({ enrollments: result, courseTitles });
     } catch (error) {
         console.error("[FETCH ENROLLMENTS]", error);

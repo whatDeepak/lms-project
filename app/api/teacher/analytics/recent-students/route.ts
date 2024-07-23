@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
 
         // Fetch the last 5 purchases made by the user
         const recentPurchases = await db.purchase.findMany({
-            where: { userId: id },
             include: {
                 course: true,
             },

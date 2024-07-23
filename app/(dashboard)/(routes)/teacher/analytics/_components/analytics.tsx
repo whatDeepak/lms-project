@@ -19,7 +19,6 @@ export function AnalyticsDashboard() {
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
   const [enrollments, setEnrollments] = useState<any[]>([]);
-  const [courseTitles, setCourseTitles] = useState<{ [key: string]: string }>({});
   const [recentStudents, setRecentStudents] = useState<RecentStudent[]>([]);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
 
@@ -46,7 +45,6 @@ export function AnalyticsDashboard() {
         setTotalCourses(coursesData.totalCourses);
         setTotalStudents(studentsData.totalStudents);
         setEnrollments(enrollmentsData.enrollments);
-        setCourseTitles(enrollmentsData.courseTitles);
         setRecentStudents(recentStudentsData.recentStudents);
       } catch (error) {
         console.error('Failed to fetch analytics data', error);
@@ -119,21 +117,8 @@ export function AnalyticsDashboard() {
         </Card>
       </div>
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <Card
-          className="xl:col-span-2" x-chunk="dashboard-01-chunk-4"
-        >
-          <CardHeader className="flex flex-row items-center">
-            <div className="grid gap-2">
-              <CardTitle>Enrollments</CardTitle>
-              <CardDescription>
-                Recent Enrolled Students in courses.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <OverviewChart data={enrollments} courseTitles={courseTitles} />
-          </CardContent>
-        </Card>
+        <OverviewChart data={enrollments} />
+        
         <Card x-chunk="dashboard-01-chunk-5">
           <CardHeader>
             <CardTitle>Recent Students</CardTitle>
