@@ -63,16 +63,16 @@ export function OverviewChart({ data }: OverviewChartProps) {
   }, [data, courseTitles]);
 
   // Calculate upper domain limit for y-axis
-  const upperDomainLimit = maxEnrollmentsPerDay ; // Add a buffer of 2 to the maximum
+  const upperDomainLimit = maxEnrollmentsPerDay; // Add a buffer of 2 to the maximum
   console.log(upperDomainLimit)
 
   return (
-    <Card>
+    <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Enrollments Chart - Interactive</CardTitle>
+          <CardTitle>Enrollments</CardTitle>
           <CardDescription>
-            Showing enrollments for the top courses
+            Recent Enrollments in the top courses
           </CardDescription>
         </div>
         <div className="flex">
@@ -80,7 +80,7 @@ export function OverviewChart({ data }: OverviewChartProps) {
             <button
               key={key}
               data-active={activeChart === key}
-              className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+              className="flex flex-1 flex-col justify-center gap-1 border-t px-4 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
               onClick={() => setActiveChart(key)}
             >
               <span className="text-xs text-muted-foreground">
