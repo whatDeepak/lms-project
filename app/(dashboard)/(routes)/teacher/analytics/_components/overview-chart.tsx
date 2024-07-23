@@ -1,122 +1,163 @@
 "use client"
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+interface OverviewChartProps {
+  data: any[];
+}
 
-const chartConfig = (courseTitles: { [key: string]: string }) => ({
-  ...Object.fromEntries(
-    Object.keys(courseTitles).map((key, index) => [
-      key,
-      {
-        label: courseTitles[key],
-        color: `hsl(var(--chart-${index + 1}))`, // Color code for each course
-      },
-    ])
-  )
-}) satisfies ChartConfig;
+export function OverviewChart({ data }: OverviewChartProps) {
+  const [activeChart, setActiveChart] = React.useState<string | null>(null);
 
-export function OverviewChart({ data, courseTitles }: { data: any[], courseTitles: { [key: string]: string } }) {
-  const [timeRange, setTimeRange] = React.useState("90d");
+  const courseTitles = React.useMemo(() => {
+    const titles = new Set<string>();
+    data.forEach(item => {
+      Object.keys(item).forEach(key => {
+        if (key !== "date") {
+          titles.add(key);
+        }
+      });
+    });
+    return Array.from(titles);
+  }, [data]);
 
-  const filteredData = data.filter((item) => {
-    const date = new Date(item.date);
-    const now = new Date();
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
+  React.useEffect(() => {
+    if (courseTitles.length > 0) {
+      setActiveChart(courseTitles[0]);
     }
-    now.setDate(now.getDate() - daysToSubtract);
-    return date >= now;
-  });
+  }, [courseTitles]);
+
+  const chartConfig: ChartConfig = {
+    views: {
+      label: "Enrollments",
+    },
+    ...courseTitles.reduce((acc, key, index) => {
+      acc[key] = {
+        label: key,
+        color: `hsl(var(--chart-${index + 1}))`, // Use index to determine color
+      };
+      return acc;
+    }, {} as any),
+  };
+
+  // Calculate total enrollments for each course
+  const totalEnrollments = React.useMemo(() => {
+    return courseTitles.reduce((acc, key) => {
+      const courseTotal = data.reduce((sum, item) => sum + (item[key] || 0), 0);
+      return {
+        ...acc,
+        [key]: courseTotal,
+      };
+    }, {} as { [key: string]: number });
+  }, [data, courseTitles]);
+
+  // Calculate max enrollments per day
+  const maxEnrollmentsPerDay = React.useMemo(() => {
+    return data.reduce((max, item) => {
+      const dailyTotal = courseTitles.reduce((sum, key) => sum + (item[key] || 0), 0);
+      return Math.max(max, dailyTotal);
+    }, 0);
+  }, [data, courseTitles]);
+
+  // Calculate upper domain limit for y-axis
+  const upperDomainLimit = maxEnrollmentsPerDay ; // Add a buffer of 2 to the maximum
+  console.log(upperDomainLimit)
 
   return (
-    <ChartContainer
-      config={chartConfig(courseTitles)}
-      className="aspect-auto h-[250px] w-full"
-    >
-      <AreaChart data={filteredData}>
-        <defs>
-          {Object.keys(courseTitles).map((key, index) => (
-            <linearGradient key={key} id={`fill${key}`} x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor={`hsl(var(--chart-${index + 1}))`}
-                stopOpacity={0.8}
-              />
-              <stop
-                offset="95%"
-                stopColor={`hsl(var(--chart-${index + 1}))`}
-                stopOpacity={0.1}
-              />
-            </linearGradient>
+    <Card>
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+          <CardTitle>Enrollments Chart - Interactive</CardTitle>
+          <CardDescription>
+            Showing enrollments for the top courses
+          </CardDescription>
+        </div>
+        <div className="flex">
+          {courseTitles.map((key, index) => (
+            <button
+              key={key}
+              data-active={activeChart === key}
+              className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+              onClick={() => setActiveChart(key)}
+            >
+              <span className="text-xs text-muted-foreground">
+                {chartConfig[key]?.label || key}
+              </span>
+              <span className="text-lg font-bold leading-none sm:text-3xl">
+                {totalEnrollments[key]?.toLocaleString() || '0'}
+              </span>
+            </button>
           ))}
-        </defs>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          minTickGap={32}
-          tickFormatter={(value) => {
-            const date = new Date(value);
-            return date.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            });
-          }}
-        />
-        <ChartTooltip
-          cursor={false}
-          content={
-            <ChartTooltipContent
-              labelFormatter={(value) => {
-                return new Date(value).toLocaleDateString("en-US", {
+        </div>
+      </CardHeader>
+      <CardContent className="px-2 sm:p-6">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
+          <LineChart
+            data={data}
+            margin={{ left: 12, right: 12 }}
+          >
+            <CartesianGrid horizontal={true} vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
                 });
               }}
-              indicator="dot"
             />
-          }
-        />
-        {Object.keys(courseTitles).map((key) => (
-          <Area
-            key={key}
-            dataKey={courseTitles[key]}
-            type="natural"
-            fill={`url(#fill${key})`}
-            stroke={`hsl(var(--chart-${Object.keys(courseTitles).indexOf(key) + 1}))`}
-            stackId="a"
-          />
-        ))}
-        <ChartLegend content={<ChartLegendContent />} />
-      </AreaChart>
-    </ChartContainer>
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickCount={upperDomainLimit} // Number of ticks to display
+              domain={[0, upperDomainLimit]} // Set domain to [0, upperDomainLimit]
+              tickFormatter={() => ''} // Disable numbers shown on Y-axis
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  className="w-[150px]"
+                  nameKey={activeChart || ''}
+                  labelFormatter={(value) => {
+                    return new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }}
+                />
+              }
+            />
+            {activeChart && (
+              <Line
+                dataKey={activeChart}
+                type="monotone"
+                stroke={chartConfig[activeChart]?.color || "#000"}
+                strokeWidth={2}
+                dot={false}
+              >
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Line>
+            )}
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

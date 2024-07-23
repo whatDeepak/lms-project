@@ -131,7 +131,7 @@ export function AnalyticsDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <OverviewChart data={enrollments} courseTitles={courseTitles} />
+            <OverviewChart data={enrollments} />
           </CardContent>
         </Card>
         <Card x-chunk="dashboard-01-chunk-5">
