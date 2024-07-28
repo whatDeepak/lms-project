@@ -68,6 +68,7 @@ model Course {
   purchases       Purchase[]
   watchLater      WatchLater[]
   favoriteCourses FavoriteCourse[]
+  announcements   Announcement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,6 +81,16 @@ model Category {
   id      String   @id @default(cuid()) @map("_id")
   name    String   @unique
   courses Course[]
+}
+model Announcement {
+  id        String   @id @default(cuid()) @map("_id")
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
 }
 
 model Attachment {
