@@ -44,7 +44,7 @@ export const columns: ColumnDef<Course>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/teacher/analytics/courses/${id}`}>
+            <Link href={`/teacher/announcements/${id}`}>
               <DropdownMenuItem>
                 <EyeIcon className="h-4 w-4 mr-2" />
                 Make Announcement

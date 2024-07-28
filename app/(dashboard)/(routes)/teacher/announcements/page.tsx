@@ -5,7 +5,7 @@ import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
 
 
-const CourseAnnouncementTable = async () => {
+const CourseAnnouncementPage = async () => {
     const user = await currentUser();
     let userId = user?.id ?? "";
 
@@ -30,4 +30,4 @@ const CourseAnnouncementTable = async () => {
 }
 
 
-export default CourseAnnouncementTable;
+export default CourseAnnouncementPage;
