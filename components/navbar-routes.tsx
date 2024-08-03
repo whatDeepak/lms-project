@@ -4,11 +4,10 @@ import { SearchInput } from "@/app/(dashboard)/_components/searchInput";
 import { UserNav } from "@/app/(dashboard)/_components/user-nav";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { usePathname } from "next/navigation";
-
-import { LogOut } from "lucide-react";
+import {  LogOut } from "lucide-react";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
+import NotificationBar from "@/app/(dashboard)/_components/notificationBar";
 
 
 export const NavbarRoutes = () => {
@@ -47,6 +46,12 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : null}
+
+        {!isTeacherPage && (
+
+          <NotificationBar />
+         
+        )}
         <UserNav />
       </div>
     </>

@@ -54,6 +54,7 @@ export const AnnouncementForm = ({
     try {
       await axios.post(`/api/courses/${courseId}/announcements`, values);
       toast.success("Announcement Added");
+      form.reset();
       toggleEdit();
       router.refresh();
     } catch {
@@ -71,7 +72,7 @@ export const AnnouncementForm = ({
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit content
+              Start Writing
             </>
           )}
         </Button>
@@ -110,7 +111,7 @@ export const AnnouncementForm = ({
                 disabled={!isValid || isSubmitting}
                 type="submit"
               >
-                Save
+                Submit
               </Button>
             </div>
           </form>
