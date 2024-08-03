@@ -42,9 +42,9 @@ const CourseIdPage = async ({
             </div>
           </div>
 
-          <div className="mt-6 border bg-slate-100 rounded-md p-4">
+          <div className="mt-6 border bg-slate-100 rounded-md p-4 max-w-[450px]">
      
-        <p className= "text-sm mt-2"
+        <p className= "text-sm mt-2 "
         >
           {announcement?.content}
         </p>

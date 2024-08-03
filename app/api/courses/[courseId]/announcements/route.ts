@@ -23,6 +23,28 @@ export async function POST(
       },
     });
 
+    // Fetch users enrolled in the course
+    const enrolledUsers = await db.purchase.findMany({
+      where: {
+        courseId: params.courseId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+    // Create notifications for each enrolled user
+    const notifications = enrolledUsers.map((enrollment) => ({
+     userId: enrollment.userId,
+     courseId: params.courseId,
+     announcementId: newAnnouncement.id,
+     isRead: false,
+     }));
+
+    console.log(notifications);
+    await db.notification.createMany({  data: notifications,  });
+
+
+
     return NextResponse.json(newAnnouncement, { status: 201 });
   } catch (error) {
     console.log("[ANNOUNCEMENTS]", error);

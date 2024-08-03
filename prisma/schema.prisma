@@ -24,7 +24,7 @@ model User {
   role            UserRole?        @default(USER)
   accounts        Account[]
   checkInDates    DateTime[]       @default([])  // New field to store check-in dates
-
+  notifications   Notification[] 
   quizAttempts    QuizAttempt[]
 }
 
@@ -92,6 +92,20 @@ model Announcement {
 
   @@index([courseId])
 }
+model Notification {
+  id            String   @id @default(cuid()) @map("_id")
+  userId        String
+  courseId      String
+  announcementId String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, isRead])
+  @@index([courseId])
+}
+
 
 model Attachment {
   id   String @id @default(cuid()) @map("_id")
