@@ -13,15 +13,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-
     // Step 1: Fetch notifications with IDs
     const notifications = await db.notification.findMany({
         where: { userId },
         select: {
+          id:true,
           announcementId: true,
           createdAt: true,
           isRead: true,
         },
+        orderBy: {
+          createdAt: 'desc', // Sort by most recent first
+        },
+        take: 12
       });
   
       if (notifications.length === 0) {
@@ -61,6 +65,7 @@ export async function GET(req: NextRequest) {
         const teacherImage = teachers.find(teacher => teacher.id === announcement.course.userId)?.image;
   
         return {
+          id: notification.id,
           courseName: announcement.course.title,
           content: announcement.content,
           teacherImage,

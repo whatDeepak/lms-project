@@ -8,13 +8,14 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import axios from 'axios';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
+import qs from "qs"
    
 
 type notificationBarProps = {
@@ -67,8 +68,12 @@ const NotificationBar:React.FC<notificationBarProps> = (
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           
-        {notifications.map((notification) => (
-          <> <DropdownMenuItem key={notification.id} className='flex  space-x-2'>
+        {notifications.map((notification) =>{
+          const queryString = qs.stringify(notification);
+
+          return (
+          <Link href={`/notifications/${notification.id}?${queryString}`} key={notification.id} passHref> 
+             <DropdownMenuItem  className='flex  space-x-2'>
                 <Image
                 src={notification.teacherImage} // Use dynamic teacher image URL
                 alt='teacher image'
@@ -85,8 +90,9 @@ const NotificationBar:React.FC<notificationBarProps> = (
                 </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            </>
-          ))}
+            </Link>
+          ) }
+        )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
