@@ -20,7 +20,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardP
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [answers, setAnswers] = useState<{ questionId: string; correct: boolean }[]>([]); // Array to store correct/incorrect answers
   const [quizDone, setQuizDone] = useState(false);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0); // Raw score out of total questions
   const confetti = useConfettiStore();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardP
     // Prepare quiz attempt data
     const attemptData = {
       quizId,
-      score,
+      score: (score / questions.length) * 100, // Convert raw score to percentage
       answers,
     };
 
@@ -141,6 +141,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardP
   };
 
   const progressValue = (currentQuestionIndex + 1) / questions.length * 100;
+  const percentageScore = questions.length > 0 ? (score / questions.length) * 100 : 0; // Calculate percentage score
 
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-md max-w-md mx-auto min-h-[350px] w-full mt-[140px] md:mt-[100px] lg:mt-[100px] xl:mt-0 z-50 relative">
@@ -171,7 +172,7 @@ const QuizCard = ({ questions, onQuizComplete, quizId, quizTimeline }: QuizCardP
       {quizDone && (
         <div className="flex flex-col items-center">
           <h2 className="text-3xl text-black font-bold mb-4">Quiz Result</h2>
-          <p className="text-2xl text-black mt-4">{score}/{questions.length} Questions Correct!</p>
+          <p className="text-2xl text-black mt-4">{percentageScore.toFixed(2)}% Correct!</p>
           <Link href="#" onClick={() => onQuizComplete(quizTimeline)} className="mt-8">
             <Button variant="default">Back to Video</Button>
           </Link>
