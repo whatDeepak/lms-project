@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { formatDistanceToNow } from 'date-fns';
+import { currentUser } from '@/lib/auth';
 
 
 
@@ -87,3 +88,28 @@ export async function GET(req: NextRequest) {
     }, { status: 500 });
   }
 }
+
+
+
+export async function PATCH(req: Request) {
+  try {
+    const user = await currentUser();
+    const userId = user?.id ?? "";
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    // Update all notifications for the user to mark as read
+    const updatedNotifications = await db.notification.updateMany({
+      where: { userId: userId, isRead: false }, // Only update notifications that are not read
+      data: { isRead: true },
+    });
+
+    return NextResponse.json({ updatedNotifications }, { status: 200 });
+  } catch (error) {
+    console.log("[MARK_ALL_READ_ERROR]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+

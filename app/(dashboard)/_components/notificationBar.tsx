@@ -1,5 +1,5 @@
 "use client"
-import { Bell } from 'lucide-react';
+import { Bell, Loader } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import {
     DropdownMenu,
@@ -16,6 +16,8 @@ import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import qs from "qs"
+import { Button } from '@/components/ui/button';
+import toast from 'react-hot-toast';
    
 
 type notificationBarProps = {
@@ -34,6 +36,7 @@ const NotificationBar:React.FC<notificationBarProps> = (
 ) => {
     const user = useCurrentUser();
      const [notifications, setNotifications] = useState<Notification[]>([]);
+     const [markingRead, setmarkingRead]=useState(false);
 
      useEffect(() => {
         if (!user) {
@@ -53,6 +56,21 @@ const NotificationBar:React.FC<notificationBarProps> = (
         fetchNotifications();
       }, [user]);
 
+      
+  const handleMarkAllAsRead = async () => {
+    setmarkingRead(true);
+      try {
+        await axios.patch(`/api/user/notifications`);
+        toast.success("Successully, Marked All as Read")
+      } catch (error) {
+        toast.error("Failed to mark notification as read");
+        console.error("Failed to mark notification as read:", error);
+      }
+      finally{
+
+          setmarkingRead(false);
+      }
+  };
     return (<div className=''>
      <DropdownMenu >
       <DropdownMenuTrigger asChild>
@@ -84,7 +102,7 @@ const NotificationBar:React.FC<notificationBarProps> = (
                 <div className='flex flex-col text-left'>
                     <div className='flex items-center  space-x-1'>
                         <h6 className='text-md font-medium truncate max-w-[210px]'>{notification.courseName}</h6>
-                        <p className='text-xs text-slate-500 md:min-w-[115px]'>{notification.timeAgo}</p>
+                        <p className='text-xs text-slate-500 md:min-w-[115px] text-right'>{notification.timeAgo}</p>
                     </div>
                     <p className='text-sm font-light truncate max-w-[280px]'>{notification.content}</p>
                 </div>
@@ -94,6 +112,13 @@ const NotificationBar:React.FC<notificationBarProps> = (
           ) }
         )}
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup className='flex items-center justify-start'>
+            <Button size="sm" className='my-[2px] mx-2' onClick={handleMarkAllAsRead}>
+            { markingRead ?  <Loader className="h-4 w-4 text-white animate-spin" /> :  "Mark All as Read"}
+            </Button>
+        </DropdownMenuGroup>
+
       </DropdownMenuContent>
     </DropdownMenu>
     </div>)
