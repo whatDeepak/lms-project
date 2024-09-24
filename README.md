@@ -23,7 +23,7 @@ Our LMS offers high-quality video lectures, interactive quizzes, and downloadabl
 Instructors can effortlessly create, manage, and deliver courses. Engage with students through discussions and keep track of course performance with powerful analytics tools.
 
 ### 5. Analytics Dashboard  
-![Course Analytics](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/analytic.jpg)  
+![Course Analytics](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/analytics.jpg)  
 Track course enrollments, student activity, and quiz results with real-time analytics. Identify trends and optimize your teaching strategies.
 
 ### 6. Video Learning  
