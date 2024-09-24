@@ -28,7 +28,6 @@ const CollectionWatchListPage = () => {
         const response = await fetch(`/api/user/watch-later?userId=${user.id}`);
         const data = await response.json();
         setwatchlistCourses(data.watchLaterCourses);
-        console.log(watchlistCourses);
       } catch (error) {
         console.log(error);
       } finally {

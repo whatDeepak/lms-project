@@ -10,6 +10,7 @@ import { QuizTitleForm } from "./_components/quiz-title-form";
 import { QuizTimelineForm } from "./_components/quiz-timeline-form";
 import { QuizQuestionsForm } from "./_components/quiz-question-form";
 import { currentUser } from "@/lib/auth";
+import { QuizActions } from "./_components/quiz-actions";
 
 const QuizIdPage = async ({
   params
@@ -76,6 +77,13 @@ const QuizIdPage = async ({
                   Complete all fields {completionText}
                 </span>
               </div>
+              <QuizActions
+                disabled={!isComplete}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                quizId={params.quizId}
+                isPublished={quiz.isPublished}
+              />
             </div>
           </div>
         </div>
