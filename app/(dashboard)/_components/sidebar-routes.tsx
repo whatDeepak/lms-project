@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart,Compass, Heart, Layout, List } from "lucide-react";
+import { BarChart,Bell,Compass, Heart, Layout, List } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { SidebarItem } from "./sidebar-item";
@@ -40,6 +40,11 @@ const teacherRoutes = [
     label: "Analytics",
     href: "/teacher/analytics",
   },
+  {
+    icon: Bell,
+    label: "Announcements",
+    href: "/teacher/announcements", 
+  }
 ]
 
 export const SidebarRoutes = () => {
