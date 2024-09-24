@@ -24,6 +24,8 @@ model User {
   role            UserRole?        @default(USER)
   accounts        Account[]
   checkInDates    DateTime[]       @default([])  // New field to store check-in dates
+  notifications   Notification[] 
+  quizAttempts    QuizAttempt[]
 }
 
 model Account {
@@ -66,6 +68,7 @@ model Course {
   purchases       Purchase[]
   watchLater      WatchLater[]
   favoriteCourses FavoriteCourse[]
+  announcements   Announcement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,6 +82,30 @@ model Category {
   name    String   @unique
   courses Course[]
 }
+model Announcement {
+  id        String   @id @default(cuid()) @map("_id")
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+model Notification {
+  id            String   @id @default(cuid()) @map("_id")
+  userId        String
+  courseId      String
+  announcementId String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, isRead])
+  @@index([courseId])
+}
+
 
 model Attachment {
   id   String @id @default(cuid()) @map("_id")
@@ -127,6 +154,7 @@ model Quiz {
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   questions Question[]
+  quizAttempts    QuizAttempt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -135,17 +163,20 @@ model Quiz {
 }
 
 model Question {
-  id       String   @id @default(cuid()) @map("_id")
-  text     String
-  type     QuestionType
-  options  String[] @default([])  // Stores options as an array
-  answers  String[] @default([])  // Stores correct answers as an array for MCQ
+  id         String   @id @default(cuid()) @map("_id")
+  text       String
+  type       QuestionType
+  option1    String?  // Individual options
+  option2    String?
+  option3    String?
+  option4    String?
+  answer     String?  // Single answer field
 
-  quizId String
-  quiz   Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId     String
+  quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([quizId])
 }
@@ -154,6 +185,20 @@ enum QuestionType {
   NORMAL
   MCQ
 }
+
+model QuizAttempt {
+  id         String      @id @default(cuid()) @map("_id")
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId     String
+  quiz       Quiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  score      Int
+  answers    Json        // Store answers in JSON format
+  createdAt  DateTime    @default(now())
+
+  @@unique([userId, quizId])
+}
+
 
 model UserProgress {
   id     String @id @default(cuid()) @map("_id")

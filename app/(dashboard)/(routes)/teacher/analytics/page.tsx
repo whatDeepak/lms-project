@@ -1,8 +1,8 @@
+import { AnalyticsDashboard } from "./_components/analytics";
+
 const AnalyticsPage = () => {
     return ( 
-      <div className="p-6">
-        Hello
-      </div>
+        <AnalyticsDashboard/>
      );
   }
    

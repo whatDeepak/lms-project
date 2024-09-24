@@ -31,7 +31,11 @@ const ChapterIdPage = async ({
       courseId: params.courseId
     },
     include: {
-      quizzes: true
+      quizzes: {
+        include: {
+          questions: true
+        }
+      }
     }
   });
 
@@ -39,14 +43,21 @@ const ChapterIdPage = async ({
     return redirect("/")
   }
 
+  const isQuizCompleted = (quiz: { questions: string | any[]; }) => {
+    return quiz.questions.length > 0;
+  }
+
+  const isQuizzesComplete = chapter.quizzes.length > 0 && chapter.quizzes.every(isQuizCompleted);
+
   const requiredFields = [
     chapter.title,
     chapter.description,
+    isQuizzesComplete ? chapter.quizzes : null,
     chapter.videoUrl,
   ];
 
   const totalFields = requiredFields.length;
-  const completedFields = requiredFields.filter(Boolean).length;
+  const completedFields = requiredFields.filter(field => field !== null).length;
 
   const completionText = `(${completedFields}/${totalFields})`;
 
