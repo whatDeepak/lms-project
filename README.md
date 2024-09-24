@@ -1,13 +1,13 @@
 # Learning Management System (LMS)
 
-![LMS Dashboard](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/dashboard.jpg)
+![LMS Dashboard](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/main.jpg)
 
 Our **Learning Management System (LMS)** redefines online education with a modern and intuitive platform that caters to both instructors and learners. Our LMS offers a seamless experience to help you learn and teach effectively.
 
 ## Key Features
 
 ### 1. Interactive Dashboard  
-![Interactive Dashboard](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/dashboard.jpg)  
+![Interactive Dashboard](https://github.com/whatDeepak/lms-project/blob/dev-branch-current/public/main.jpg)  
 Monitor your progress, enroll in courses, and manage your profile easily through a user-friendly dashboard. Stay on top of your learning journey!
 
 ### 2. Course Catalog  
