@@ -28,7 +28,10 @@ export const {
   callbacks: {
     async signIn({ account, profile }) {
       // Check if email is verified and ends with `@nitj.ac.in`
-      if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+      // if (!profile?.email_verified || !profile?.email?.endsWith(`@nitj.ac.in`)) {
+      //   return false;
+      // }
+      if (!profile?.email_verified) {
         return false;
       }
       return true;
@@ -43,7 +46,7 @@ export const {
       }
 
       if (session.user) {
-        session.user.rollNo= token.rollNo as String;
+        session.user.rollNo = token.rollNo as String;
       }
 
       if (session.user) {
@@ -69,7 +72,7 @@ export const {
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.role = existingUser.role;
-      token.rollNo= existingUser.rollNo
+      token.rollNo = existingUser.rollNo
 
       // Check if the user's email exists in the teacher collection
       if (token.email) {
